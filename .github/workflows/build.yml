@@ -1,0 +1,30 @@
+name: "Build"
+on:
+  push:
+    branches:
+      - main
+      - ci
+
+env:
+  GODOT_VERSION: 3.5.2
+  EXPORT_NAME: ld54
+
+jobs:
+  build-windows:
+    name: Windows Build
+    runs-on: ubuntu-22.04
+    container:
+      image: barichello/godot-ci:mono-3.5.2
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/export_templates/
+      - run: |
+          mkdir -v -p builds/windows
+          godot --headless --export-release "Windows Desktop" ./builds/windows/$EXPORT_NAME.exe
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows
+          path: builds/windows
+          retention-days: 1
