@@ -24,7 +24,7 @@ jobs:
       - name: Set up templates
         run: |
           mkdir -v -p ~/.local/share/godot/templates
-          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/export_templates/
+          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/templates
       - name: Build
         run: |
           mkdir -v -p build/windows
@@ -47,7 +47,7 @@ jobs:
       - name: Set up templates
         run: |
           mkdir -v -p ~/.local/share/godot/templates
-          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/export_templates/
+          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/templates
       - name: Build
         run: |
           mkdir -v -p build/web
