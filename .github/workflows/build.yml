@@ -5,6 +5,9 @@ on:
       - main
       - ci
 
+permissions:
+  contents: write
+
 env:
   GODOT_VERSION: 3.5.2
   EXPORT_NAME: ld54
@@ -16,15 +19,46 @@ jobs:
     container:
       image: barichello/godot-ci:mono-3.5.2
     steps:
-      - uses: actions/checkout@v4
-      - run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
-          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/export_templates/
-      - run: |
-          mkdir -v -p builds/windows
-          godot --headless --export-release "Windows Desktop" ./builds/windows/$EXPORT_NAME.exe
-      - uses: actions/upload-artifact@v3
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+      - name: Build
+        run: |
+          mkdir -v -p build/windows
+          godot -v --export "Windows Desktop" ./build/windows/$EXPORT_NAME.exe
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
           name: windows
-          path: builds/windows
+          path: build/windows
           retention-days: 1
+
+  build-web:
+    name: Web Build
+    runs-on: ubuntu-22.04
+    container:
+      image: barichello/godot-ci:mono-3.5.2
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+      - name: Build
+        run: |
+          mkdir -v -p build/web
+          godot -v --export "HTML5" ./build/web/index.html
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: web
+          path: build/web
+          retention-days: 1
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/web
