@@ -1,0 +1,63 @@
+name: "Build"
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+env:
+  GODOT_VERSION: 3.5.2
+  EXPORT_NAME: ld54
+
+jobs:
+  build-windows:
+    name: Windows Build
+    runs-on: ubuntu-22.04
+    container:
+      image: barichello/godot-ci:mono-3.5.2
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/templates
+      - name: Build
+        run: |
+          mkdir -v -p build/windows
+          godot -v --export "Windows Desktop" ./build/windows/$EXPORT_NAME.exe
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows
+          path: build/windows
+          retention-days: 1
+
+  build-web:
+    name: Web Build
+    runs-on: ubuntu-22.04
+    container:
+      image: barichello/godot-ci:mono-3.5.2
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/templates
+      - name: Build
+        run: |
+          mkdir -v -p build/web
+          godot -v --export "HTML5" ./build/web/index.html
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: web
+          path: build/web
+          retention-days: 1
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/web
