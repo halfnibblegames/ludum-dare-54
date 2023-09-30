@@ -17,6 +17,12 @@ public static class ItemLibrary
         Bomb
     }
 
+    public static ItemType RandomType()
+    {
+        var types = Enum.GetValues(typeof(ItemType));
+        return (ItemType) types.GetValue(GD.Randi() % types.Length);
+    }
+
     public static Properties Resolve(ItemType itemType) => itemType switch
     {
         ItemType.Sword => new Properties(1, 2, 0, 0),

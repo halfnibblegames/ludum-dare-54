@@ -1,27 +1,34 @@
-using System;
 using Godot;
 
 public sealed class Main : Node
 {
+    private DungeonTraverser dungeonTraverser = null!;
+
     [Export] private PackedScene hoveringItem = null!;
 
     public override void _Ready()
     {
         GD.Randomize();
-        spawnRandomHoveringItem();
+        dungeonTraverser = new DungeonTraverser(
+            new DungeonLayout(
+                RoomLibrary.RandomSingleItem(),
+                RoomLibrary.RandomSingleItem(),
+                RoomLibrary.RandomSingleItem(),
+                RoomLibrary.RandomSingleItem()
+            ));
+
+        GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
     }
 
     private void onItemPlaced(HoveringItem item)
     {
         RemoveChild(item);
-        spawnRandomHoveringItem();
+        GetNode<Room>("Room").StepCompleted();
     }
 
-    private void spawnRandomHoveringItem()
+    private void onItemDropped(ItemLibrary.ItemType type)
     {
-        var types = Enum.GetValues(typeof(ItemLibrary.ItemType));
-        var randomType = (ItemLibrary.ItemType) types.GetValue(GD.Randi() % types.Length);
-        spawnHoveringItem(randomType);
+        spawnHoveringItem(type);
     }
 
     private void spawnHoveringItem(ItemLibrary.ItemType type)
@@ -30,5 +37,11 @@ public sealed class Main : Node
         newItem.SetType(type);
         newItem.Connect(nameof(HoveringItem.ItemPlaced), this, nameof(onItemPlaced));
         AddChild(newItem);
+    }
+
+    private void onRoomExited()
+    {
+        dungeonTraverser.MoveForward();
+        GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
     }
 }

@@ -13,3 +13,6 @@ hoveringItem = ExtResource( 2 )
 
 [node name="Inventory" parent="." instance=ExtResource( 1 )]
 position = Vector2( 4, 24 )
+
+[connection signal="ItemDropped" from="Room" to="." method="onItemDropped"]
+[connection signal="RoomExited" from="Room" to="." method="onRoomExited"]
