@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Array = System.Array;
@@ -34,7 +35,8 @@ public sealed class Inventory : Area2D
 
     [Export] private PackedScene itemSlotScene = null!;
 
-    [Export] private Item?[] items = Array.Empty<Item?>();
+    private Item?[] itemGrid = Array.Empty<Item?>();
+    private List<Item> heldItems = new();
     private bool ready;
 
     public Item? this[Coord coord]
@@ -45,8 +47,8 @@ public sealed class Inventory : Area2D
 
     public Item? this[int x, int y]
     {
-        get => items[toIndex(x, y)];
-        set => items[toIndex(x, y)] = value;
+        get => itemGrid[toIndex(x, y)];
+        set => itemGrid[toIndex(x, y)] = value;
     }
 
     private int toIndex(int x, int y)
@@ -73,11 +75,11 @@ public sealed class Inventory : Area2D
     private void applyDimensionChange()
     {
         if (!ready) return;
-        if (items.Length > 0)
+        if (itemGrid.Length > 0)
         {
             GetTree().CallGroup("slots", "queue_free");
         }
-        items = new Item?[width * height];
+        itemGrid = new Item?[width * height];
         for (var y = 0; y < height; y++)
         {
             for (var x = 0; x < width; x++)
@@ -119,44 +121,4 @@ public sealed class Inventory : Area2D
         return new InventoryFitResult(
             tiles.All(t => t.IsValid) ? ResultType.Valid : ResultType.Overlap, Position + slotPos + offset, tiles);
     }
-}
-
-public readonly record struct InventoryFitResult(ResultType Result, Vector2 Position, InventoryFitResultTile[] Tiles)
-{
-    public static InventoryFitResult OutOfGrid =>
-        new(ResultType.OutOfGrid, Vector2.Zero, Array.Empty<InventoryFitResultTile>());
-
-    public void Commit(Inventory inventory, Item item)
-    {
-        if (!Result.CanCommit())
-        {
-            throw new InvalidOperationException();
-        }
-
-        item.GetParent().RemoveChild(item);
-        inventory.AddChild(item);
-        item.Position = Position;
-
-        foreach (var t in Tiles)
-        {
-            inventory[t.Tile] = item;
-        }
-    }
-}
-
-public readonly record struct Coord(int X, int Y);
-
-public readonly record struct InventoryFitResultTile(Coord Tile, bool IsValid);
-
-public enum ResultType
-{
-    Valid,
-    OutOfGrid,
-    Overlap,
-}
-
-public static class ResultTypeExtensions
-{
-    public static bool CanPreview(this ResultType result) => result != ResultType.OutOfGrid;
-    public static bool CanCommit(this ResultType result) => result == ResultType.Valid;
 }
