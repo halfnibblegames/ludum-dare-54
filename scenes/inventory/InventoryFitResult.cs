@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Godot;
 
 public sealed record InventoryFitResult(ResultType Result, Vector2 Position, InventoryFitResultTile[] Tiles)
@@ -14,13 +15,7 @@ public sealed record InventoryFitResult(ResultType Result, Vector2 Position, Inv
         }
 
         item.GetParent().RemoveChild(item);
-        inventory.AddChild(item);
-        item.Position = Position - inventory.Position;
-
-        foreach (var t in Tiles)
-        {
-            inventory[t.Tile] = item;
-        }
+        inventory.AddItem(item, Tiles.Select(t => t.Tile), Position);
     }
 }
 

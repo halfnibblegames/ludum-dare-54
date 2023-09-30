@@ -5,6 +5,9 @@ public sealed class Item : Node2D
     [Signal]
     public delegate void PropertiesChanged();
 
+    [Signal]
+    public delegate void ItemDepleted();
+
     private ItemLibrary.ItemType type = ItemLibrary.ItemType.Sword;
 
     public ItemLibrary.Properties Properties { get; private set; } = null!;
@@ -35,5 +38,10 @@ public sealed class Item : Node2D
             sprite.RegionRect = Properties.SpriteRect;
         }
         EmitSignal(nameof(PropertiesChanged));
+    }
+
+    public void Use()
+    {
+        EmitSignal(nameof(ItemDepleted));
     }
 }

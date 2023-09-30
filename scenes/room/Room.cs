@@ -8,6 +8,9 @@ public sealed class Room : Node2D
     public delegate void ItemDropped(ItemLibrary.ItemType type);
 
     [Signal]
+    public delegate void EncounterStarted();
+
+    [Signal]
     public delegate void RoomExited();
 
     private readonly Queue<IRoomStep> queuedSteps = new();
@@ -42,6 +45,9 @@ public sealed class Room : Node2D
             case ItemDropStep itemDrop:
                 dropItem(itemDrop.Item);
                 break;
+            case EncounterStep:
+                startEncounter();
+                break;
             default:
                 throw new InvalidOperationException($"Step cannot be handled: {step.GetType()}");
         }
@@ -55,5 +61,10 @@ public sealed class Room : Node2D
     private void dropItem(ItemLibrary.ItemType item)
     {
         EmitSignal(nameof(ItemDropped), item);
+    }
+
+    private void startEncounter()
+    {
+        EmitSignal(nameof(EncounterStarted));
     }
 }

@@ -1,20 +1,16 @@
 ﻿public sealed class DungeonTraverser
 {
-    private readonly DungeonLayout layout;
+    private DungeonRoom currentRoom;
 
-    private int i;
+    public RoomContents CurrentRoom => currentRoom.Contents;
 
-    public RoomContents CurrentRoom => layout.Rooms[i];
-
-    public DungeonTraverser(DungeonLayout layout)
+    public DungeonTraverser(Dungeon dungeon)
     {
-        this.layout = layout;
+        currentRoom = dungeon.EntranceRoom;
     }
 
     public void MoveForward()
     {
-        i++;
-        // TODO(tom): remove this once we can end dungeons
-        i %= layout.Rooms.Length;
+        currentRoom = currentRoom.North ?? currentRoom.East ?? currentRoom.South ?? currentRoom.West ?? currentRoom;
     }
 }

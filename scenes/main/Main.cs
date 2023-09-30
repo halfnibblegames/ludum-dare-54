@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 public sealed class Main : Node
@@ -9,13 +10,7 @@ public sealed class Main : Node
     public override void _Ready()
     {
         GD.Randomize();
-        dungeonTraverser = new DungeonTraverser(
-            new DungeonLayout(
-                RoomLibrary.RandomSingleItem(),
-                RoomLibrary.RandomSingleItem(),
-                RoomLibrary.RandomSingleItem(),
-                RoomLibrary.RandomSingleItem()
-            ));
+        dungeonTraverser = new DungeonTraverser(Dungeon.Dungeons().First());
 
         GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
     }
@@ -37,6 +32,11 @@ public sealed class Main : Node
         newItem.SetType(type);
         newItem.Connect(nameof(HoveringItem.ItemPlaced), this, nameof(onItemPlaced));
         AddChild(newItem);
+    }
+
+    private void onEncounterStarted()
+    {
+
     }
 
     private void onRoomExited()

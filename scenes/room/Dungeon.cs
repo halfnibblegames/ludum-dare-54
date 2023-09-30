@@ -1,40 +1,13 @@
-
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static ItemLibrary.ItemType;
 
-public abstract record RoomEvent
+public static class DungeonRoomParser
 {
-    public sealed record None : RoomEvent
-    {
-        public static readonly None Instance = new();
-    }
-
-    public sealed record Exit : RoomEvent
-    {
-        public static readonly None Instance = new();
-    }
-
-    // TODO: Add necessary battle shenanigans.
-    public sealed record Battle : RoomEvent;
-
-    // TODO: Add necessary trasure shenanigans.
-    public sealed record Treasure : RoomEvent;
-    
-}
-
-
-
-public sealed record DungeonRoom(
-    DungeonRoom? North,
-    DungeonRoom? East,
-    DungeonRoom? South,
-    DungeonRoom? West,
-    RoomEvent Event
-)
-{
-    public static DungeonRoom FromMap(string map)
+    public static IReadOnlyDictionary<Coord, RoomContents> FromMap(string map, out Coord entrance)
     {
         var splitMap = map
             .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
@@ -47,49 +20,73 @@ public sealed record DungeonRoom(
         var y = Regex
             .Matches(map.Substring(0, indexOfEntrance), Environment.NewLine)
             .Count;
-
         var x = splitMap[y].IndexOf("P", StringComparison.Ordinal);
+        entrance = new Coord(x, y);
+        var dict = new Dictionary<Coord, RoomContents>();
 
-        return new DungeonRoom(
-            North: FromMap(splitMap, (x, y - 1)),
-            East: FromMap(splitMap, (x + 1, y)),
-            South: FromMap(splitMap, (x, y + 1)),
-            West: FromMap(splitMap, (x - 1, y)),
-            Event: RoomEvent.None.Instance
-        );
+        for (var j = 0; j < splitMap.Length; j++)
+        {
+            for (var i = 0; i < splitMap[j].Length; i++)
+            {
+                if (parseContents(splitMap[j][i]) is { } contents)
+                {
+                    dict.Add(new Coord(i, j), contents);
+                }
+            }
+        }
+
+        return dict;
     }
-    
-    private  static DungeonRoom? FromMap(string[] map, (int, int) currentRoom)
+
+    private static RoomContents? parseContents(char c)
     {
-        var (x, y) = currentRoom;
-        var eventString = map.ElementAtOrDefault(y)?.ElementAtOrDefault(x);
-        if (eventString is null || eventString == ' ')
+        if (c is ' ')
             return null;
 
-        RoomEvent roomEvent = eventString switch
-        { 
-            'X' => new RoomEvent.Battle(),
-            '$' => new RoomEvent.Treasure(),
-            _ => RoomEvent.None.Instance
+        return c switch
+        {
+            'X' => RoomLibrary.HazardWithLoot(ItemLibrary.RandomItem()),
+            '$' => RoomLibrary.SingleItem(ItemLibrary.RandomItem()),
+            _ => RoomLibrary.Empty()
         };
+    }
+}
 
-        return new DungeonRoom(
-            North: FromMap(map, (x, y - 1)),
-            East: FromMap(map, (x + 1, y)),
-            South: FromMap(map, (x, y + 1)),
-            West: FromMap(map, (x - 1, y)),
-            Event: roomEvent
-        );
+public sealed class DungeonRoom
+{
+    private readonly Dungeon dungeon;
+    private readonly Coord coords;
+
+    public RoomContents Contents { get; }
+
+    public DungeonRoom? North => dungeon[coords.Above];
+    public DungeonRoom? East => dungeon[coords.Left];
+    public DungeonRoom? South => dungeon[coords.Below];
+    public DungeonRoom? West => dungeon[coords.Left];
+
+    public DungeonRoom(Dungeon dungeon, Coord coords, RoomContents contents)
+    {
+        this.dungeon = dungeon;
+        this.coords = coords;
+        Contents = contents;
     }
 }
 
 public sealed record Dungeon(
     string Name,
     IReadOnlyList<ItemLibrary.ItemType> StartingItems,
-    DungeonRoom Rooms,
+    IReadOnlyDictionary<Coord, RoomContents> Rooms,
+    Coord Entrance,
     IReadOnlyList<string> Monologue
 )
 {
+    public DungeonRoom? this[Coord coords] =>
+        Rooms.TryGetValue(coords, out var contents)
+            ? new DungeonRoom(this, coords, contents)
+            : null;
+
+    public DungeonRoom EntranceRoom => this[Entrance] ?? throw new InvalidDataException();
+
     public static IEnumerable<Dungeon> Dungeons()
     {
         const string firstDungeonMap = @"
@@ -99,10 +96,11 @@ public sealed record Dungeon(
 P
 ";
 
-        yield return new(
+        yield return new Dungeon(
             Name: "A Tale of Encumbrance",
-            StartingItems: new [] { ItemLibrary.ItemType.Sword },
-            Rooms: DungeonRoom.FromMap(firstDungeonMap),
+            StartingItems: new [] { Sword },
+            Rooms: DungeonRoomParser.FromMap(firstDungeonMap, out var entrance),
+            Entrance: entrance,
             Monologue: new List<string>
             {
                 "Phew, that was a close call! I'm glad I managed to escape these nondescript monsters in time to arrive at the first monologue unscathed.",

@@ -102,4 +102,36 @@ public sealed class Inventory : Area2D
         return new InventoryFitResult(
             tiles.All(t => t.IsValid) ? ResultType.Valid : ResultType.Overlap, Position + slotPos + offset, tiles);
     }
+
+    public void AddItem(Item item, IEnumerable<Coord> tiles, Vector2 globalPosition)
+    {
+        AddChild(item);
+        item.GlobalPosition = globalPosition;
+
+        heldItems.Add(item);
+        foreach (var t in tiles)
+        {
+            this[t] = item;
+        }
+
+        item.Connect(nameof(Item.ItemDepleted), this, nameof(onItemDepleted), new Godot.Collections.Array(item));
+    }
+
+    private void onItemDepleted(Item item)
+    {
+        removeItem(item);
+    }
+
+    private void removeItem(Item item)
+    {
+        heldItems.Remove(item);
+        for (var i = 0; i < itemGrid.Length; i++)
+        {
+            if (itemGrid[i] == item)
+            {
+                itemGrid[i] = null;
+            }
+        }
+        item.QueueFree();
+    }
 }
