@@ -8,7 +8,7 @@ public sealed class Main : Node
     public override void _Ready()
     {
         GD.Randomize();
-        var dungeon = Dungeon.Dungeons().First();
+        var dungeon = Dungeon.Make();
         GetNode<Inventory>("Inventory").Populate(dungeon.StartingItems);
         dungeonTraverser = new DungeonTraverser(dungeon);
 

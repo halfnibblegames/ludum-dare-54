@@ -87,7 +87,7 @@ public sealed record Dungeon(
 
     public DungeonRoom EntranceRoom => this[Entrance] ?? throw new InvalidDataException();
 
-    public static IEnumerable<Dungeon> Dungeons()
+    public static Dungeon Make()
     {
         const string firstDungeonMap = @"
  $.E
@@ -96,7 +96,7 @@ public sealed record Dungeon(
 P
 ";
 
-        yield return new Dungeon(
+        return new Dungeon(
             Name: "A Tale of Encumbrance",
             StartingItems: new [] { Sword },
             Rooms: DungeonRoomParser.FromMap(firstDungeonMap, out var entrance),
