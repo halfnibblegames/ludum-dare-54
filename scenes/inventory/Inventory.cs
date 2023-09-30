@@ -4,7 +4,7 @@ using Array = System.Array;
 using static Constants;
 
 [Tool]
-public sealed class Inventory : Node2D
+public sealed class Inventory : Area2D
 {
     private int width = 3;
     private int height = 3;
@@ -88,6 +88,13 @@ public sealed class Inventory : Node2D
                 AddChild(slot);
             }
         }
+
+        if (GetNode<CollisionShape2D>("BoundingBox") is { } boundingBox)
+        {
+            var rect = (RectangleShape2D) boundingBox.Shape;
+            rect.Extents = 0.5f * ItemSlotSize * new Vector2(width, height);
+            boundingBox.Position = rect.Extents;
+        }
     }
 
     private void onItemDropped(Item? item, int x, int y)
@@ -99,4 +106,23 @@ public sealed class Inventory : Node2D
 
         this[x, y] = item;
     }
+
+    public InventoryFitResult FitItem(Vector2 pos, ItemLibrary.Properties properties)
+    {
+        var offset = 0.5f * ItemSlotSize * new Vector2(properties.Width - 1, properties.Height - 1);
+        var d = pos - Position - offset;
+        var x = (int) (d.x / ItemSlotSize);
+        var y = (int) (d.y / ItemSlotSize);
+        if (x < 0 || x >= width - properties.Width + 1 || y < 0 || y > width - properties.Height + 1)
+        {
+            return InventoryFitResult.NoFit;
+        }
+        var slotPos = new Vector2((x + 0.5f) * ItemSlotSize, (y + 0.5f) * ItemSlotSize);
+        return new InventoryFitResult(true, Position + slotPos + offset);
+    }
+}
+
+public record struct InventoryFitResult(bool Fits, Vector2 Position)
+{
+    public static InventoryFitResult NoFit => new(false, Vector2.Zero);
 }

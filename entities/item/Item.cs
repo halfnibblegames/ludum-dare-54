@@ -2,9 +2,12 @@ using Godot;
 
 public class Item : Node
 {
+    [Signal]
+    public delegate void PropertiesChanged();
+
     private ItemLibrary.Key type = ItemLibrary.Key.Sword;
 
-    private ItemLibrary.Properties properties = null!;
+    public ItemLibrary.Properties Properties { get; private set; } = null!;
 
     [Export]
     public ItemLibrary.Key Type
@@ -13,6 +16,7 @@ public class Item : Node
         set
         {
             type = value;
+            Properties = ItemLibrary.Resolve(type);
             applyProperties();
         }
     }
@@ -20,7 +24,7 @@ public class Item : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        properties = ItemLibrary.Resolve(type);
+        Properties = ItemLibrary.Resolve(type);
         applyProperties();
     }
 
@@ -28,7 +32,8 @@ public class Item : Node
     {
         if (GetNodeOrNull<Sprite>("Sprite") is { } sprite)
         {
-            sprite.RegionRect = properties.SpriteRect;
+            sprite.RegionRect = Properties.SpriteRect;
         }
+        EmitSignal(nameof(PropertiesChanged));
     }
 }

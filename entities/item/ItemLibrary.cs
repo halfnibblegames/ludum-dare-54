@@ -26,5 +26,7 @@ public static class ItemLibrary
             SpriteY * ItemSlotSize,
             Width * ItemSlotSize,
             Height * ItemSlotSize);
+
+        public Vector2 HalfSize = 0.5f * ItemSlotSize * new Vector2(Width, Height);
     }
 }
