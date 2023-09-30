@@ -1,8 +1,12 @@
+using System;
 using Godot;
 
 public class HoveringItem : Area2D
 {
-    public Item Item = null!;
+    [Signal]
+    public delegate void ItemPlaced(HoveringItem item);
+
+    private Item item = null!;
     private Vector2 mousePos = Vector2.Zero;
     private Vector2? snapPos = null;
     private Inventory? inventory;
@@ -10,8 +14,10 @@ public class HoveringItem : Area2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        Item = GetNode<Item>("Item");
+        item = GetNode<Item>("Item");
         onItemPropertiesChanged();
+        mousePos = GetGlobalMousePosition();
+        Position = mousePos;
     }
 
     public override void _Process(float delta)
@@ -24,8 +30,8 @@ public class HoveringItem : Area2D
     private void tryUpdateSnapPos()
     {
         if (inventory is null) return;
-        var result = inventory.FitItem(mousePos, Item.Properties);
-        snapPos = result.Fits ? result.Position : null;
+        var result = inventory.FitItem(mousePos, item.Properties);
+        snapPos = result.Result.CanPreview() ? result.Position : null;
     }
 
     public override void _Input(InputEvent @event)
@@ -35,15 +41,26 @@ public class HoveringItem : Area2D
         {
             mousePos = motionEvent.Position;
         }
+
+        if (inventory is not null &&
+            @event is InputEventMouseButton { Pressed: true, ButtonIndex: (int)ButtonList.Left })
+        {
+            var result = inventory.FitItem(mousePos, item.Properties);
+            if (result.Result.CanCommit())
+            {
+                result.Commit(inventory, item);
+                EmitSignal(nameof(ItemPlaced), this);
+            }
+        }
     }
 
     private void onItemPropertiesChanged()
     {
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (GetNode<CollisionShape2D>("BoundingBox") is { } boundingBox && Item is not null)
+        if (GetNode<CollisionShape2D>("BoundingBox") is { } boundingBox && item is not null)
         {
             var rect = (RectangleShape2D) boundingBox.Shape;
-            rect.Extents = Item.Properties.HalfSize;
+            rect.Extents = item.Properties.HalfSize;
         }
     }
 
@@ -62,5 +79,12 @@ public class HoveringItem : Area2D
             inventory = null;
             snapPos = null;
         }
+    }
+
+    public void RandomizeItem()
+    {
+        var keys = Enum.GetValues(typeof(ItemLibrary.Key));
+        var randomKey = (ItemLibrary.Key) keys.GetValue(GD.Randi() % keys.Length);
+        GetNode<Item>("Item").Type = randomKey;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 using Array = System.Array;
 using static Constants;
@@ -35,6 +36,12 @@ public sealed class Inventory : Area2D
 
     [Export] private Item?[] items = Array.Empty<Item?>();
     private bool ready;
+
+    public Item? this[Coord coord]
+    {
+        get => this[coord.X, coord.Y];
+        set => this[coord.X, coord.Y] = value;
+    }
 
     public Item? this[int x, int y]
     {
@@ -77,14 +84,6 @@ public sealed class Inventory : Area2D
             {
                 var slot = itemSlotScene.Instance<Node2D>();
                 slot.Position = new Vector2((x + 0.5f) * ItemSlotSize, (y + 0.5f) * ItemSlotSize);
-                if (!Engine.EditorHint)
-                {
-                    slot.Connect(
-                        nameof(ItemSlot.ItemDropped),
-                        this,
-                        nameof(onItemDropped),
-                        new Godot.Collections.Array(x, y));
-                }
                 AddChild(slot);
             }
         }
@@ -97,16 +96,6 @@ public sealed class Inventory : Area2D
         }
     }
 
-    private void onItemDropped(Item? item, int x, int y)
-    {
-        if (this[x, y] is not null)
-        {
-            throw new InvalidOperationException();
-        }
-
-        this[x, y] = item;
-    }
-
     public InventoryFitResult FitItem(Vector2 pos, ItemLibrary.Properties properties)
     {
         var offset = 0.5f * ItemSlotSize * new Vector2(properties.Width - 1, properties.Height - 1);
@@ -115,14 +104,59 @@ public sealed class Inventory : Area2D
         var y = (int) (d.y / ItemSlotSize);
         if (x < 0 || x >= width - properties.Width + 1 || y < 0 || y > width - properties.Height + 1)
         {
-            return InventoryFitResult.NoFit;
+            return InventoryFitResult.OutOfGrid;
         }
         var slotPos = new Vector2((x + 0.5f) * ItemSlotSize, (y + 0.5f) * ItemSlotSize);
-        return new InventoryFitResult(true, Position + slotPos + offset);
+        var tiles = new InventoryFitResultTile[properties.Width * properties.Height];
+        for (var j = 0; j < properties.Height; j++)
+        {
+            for (var i = 0; i < properties.Width; i++)
+            {
+                tiles[j * properties.Width + i] =
+                    new InventoryFitResultTile(new Coord(x + i, y + j), this[x + i, y + j] is null);
+            }
+        }
+        return new InventoryFitResult(
+            tiles.All(t => t.IsValid) ? ResultType.Valid : ResultType.Overlap, Position + slotPos + offset, tiles);
     }
 }
 
-public record struct InventoryFitResult(bool Fits, Vector2 Position)
+public readonly record struct InventoryFitResult(ResultType Result, Vector2 Position, InventoryFitResultTile[] Tiles)
 {
-    public static InventoryFitResult NoFit => new(false, Vector2.Zero);
+    public static InventoryFitResult OutOfGrid =>
+        new(ResultType.OutOfGrid, Vector2.Zero, Array.Empty<InventoryFitResultTile>());
+
+    public void Commit(Inventory inventory, Item item)
+    {
+        if (!Result.CanCommit())
+        {
+            throw new InvalidOperationException();
+        }
+
+        item.GetParent().RemoveChild(item);
+        inventory.AddChild(item);
+        item.Position = Position;
+
+        foreach (var t in Tiles)
+        {
+            inventory[t.Tile] = item;
+        }
+    }
+}
+
+public readonly record struct Coord(int X, int Y);
+
+public readonly record struct InventoryFitResultTile(Coord Tile, bool IsValid);
+
+public enum ResultType
+{
+    Valid,
+    OutOfGrid,
+    Overlap,
+}
+
+public static class ResultTypeExtensions
+{
+    public static bool CanPreview(this ResultType result) => result != ResultType.OutOfGrid;
+    public static bool CanCommit(this ResultType result) => result == ResultType.Valid;
 }
