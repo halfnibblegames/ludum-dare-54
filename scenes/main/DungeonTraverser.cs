@@ -14,5 +14,7 @@
     public void MoveForward()
     {
         i++;
+        // TODO(tom): remove this once we can end dungeons
+        i %= layout.Rooms.Length;
     }
 }
