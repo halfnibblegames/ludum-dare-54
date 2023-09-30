@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7
+      - name: Restore
+        run: dotnet restore
       - name: Set up templates
         run: |
           mkdir -v -p ~/.local/share/godot/templates
@@ -33,6 +39,34 @@ jobs:
         with:
           name: windows
           path: build/windows
+          retention-days: 1
+  build-macos:
+    name: macOS Build
+    runs-on: macos-latest
+    container:
+      image: barichello/godot-ci:mono-3.5.2
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7
+      - name: Restore
+        run: dotnet restore
+      - name: Set up templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv -v /root/.local/share/godot/templates/* ~/.local/share/godot/templates
+      - name: Build
+        run: |
+          mkdir -v -p build/macos
+          godot -v --export "macOS Desktop" ./build/macos/$EXPORT_NAME.dmg
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos
+          path: build/macos
           retention-days: 1
 
   build-web:
