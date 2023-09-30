@@ -1,7 +1,7 @@
 ﻿using System;
 using Godot;
 
-public readonly record struct InventoryFitResult(ResultType Result, Vector2 Position, InventoryFitResultTile[] Tiles)
+public sealed record InventoryFitResult(ResultType Result, Vector2 Position, InventoryFitResultTile[] Tiles)
 {
     public static InventoryFitResult OutOfGrid =>
         new(ResultType.OutOfGrid, Vector2.Zero, Array.Empty<InventoryFitResultTile>());
@@ -24,7 +24,17 @@ public readonly record struct InventoryFitResult(ResultType Result, Vector2 Posi
     }
 }
 
-public readonly record struct InventoryFitResultTile(Coord Tile, bool IsValid);
+public readonly struct InventoryFitResultTile
+{
+    public Coord Tile { get; }
+    public bool IsValid { get; }
+
+    public InventoryFitResultTile(Coord tile, bool isValid)
+    {
+        Tile = tile;
+        IsValid = isValid;
+    }
+}
 
 public enum ResultType
 {

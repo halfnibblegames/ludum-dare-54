@@ -1,1 +1,11 @@
-﻿public readonly record struct Coord(int X, int Y);
+﻿public readonly struct Coord
+{
+    public int X { get; }
+    public int Y { get; }
+
+    public Coord(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+}
