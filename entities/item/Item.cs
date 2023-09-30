@@ -24,7 +24,6 @@ public sealed class Item : Node2D
         }
     }
 
-    // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         Properties = ItemLibrary.Resolve(type);

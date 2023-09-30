@@ -171,4 +171,51 @@ public sealed class Inventory : Area2D
         }
         item.QueueFree();
     }
+
+    public void Populate(IEnumerable<ItemLibrary.ItemType> items)
+    {
+        var templates = GetNode<Templates>("/root/Templates");
+        foreach (var type in items)
+        {
+            var item = templates.ItemScene.Instance<Item>();
+            item.Type = type;
+            if (!tryFindPosition(item.Properties, out var tiles, out var position))
+            {
+                throw new InvalidOperationException("Could not place requested items");
+            }
+            AddItem(item, tiles, position);
+        }
+    }
+
+    private bool tryFindPosition(ItemLibrary.Properties properties, out IEnumerable<Coord> tiles, out Vector2 position)
+    {
+        for (var y = height - properties.Height; y >= 0; y--)
+        {
+            for (var x = width - properties.Width; x >= 0; x++)
+            {
+                var coords = new Coord[properties.Width * properties.Height];
+
+                for (var j = 0; j < properties.Height; j++)
+                {
+                    for (var i = 0; i < properties.Width; i++)
+                    {
+                        coords[j * properties.Width + i] = new Coord(x + i, y + j);
+                    }
+                }
+
+                if (coords.Select(c => this[c]).All(item => item is null))
+                {
+                    tiles = coords;
+                    position = Position + toLocalPos(coords[0]) +
+                        0.5f * ItemSlotSize * new Vector2(properties.Width - 1, properties.Height - 1);
+                    return true;
+                }
+            }
+        }
+
+        tiles = Array.Empty<Coord>();
+        position = default;
+
+        return false;
+    }
 }

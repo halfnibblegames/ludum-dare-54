@@ -5,12 +5,12 @@ public sealed class Main : Node
 {
     private DungeonTraverser dungeonTraverser = null!;
 
-    [Export] private PackedScene hoveringItem = null!;
-
     public override void _Ready()
     {
         GD.Randomize();
-        dungeonTraverser = new DungeonTraverser(Dungeon.Dungeons().First());
+        var dungeon = Dungeon.Dungeons().First();
+        GetNode<Inventory>("Inventory").Populate(dungeon.StartingItems);
+        dungeonTraverser = new DungeonTraverser(dungeon);
 
         GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
     }
