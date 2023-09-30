@@ -5,12 +5,12 @@ public class Item : Node2D
     [Signal]
     public delegate void PropertiesChanged();
 
-    private ItemLibrary.Key type = ItemLibrary.Key.Sword;
+    private ItemLibrary.ItemType type = ItemLibrary.ItemType.Sword;
 
     public ItemLibrary.Properties Properties { get; private set; } = null!;
 
     [Export]
-    public ItemLibrary.Key Type
+    public ItemLibrary.ItemType Type
     {
         get => type;
         set
