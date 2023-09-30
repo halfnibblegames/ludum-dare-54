@@ -33,11 +33,8 @@ public sealed class Inventory : Area2D
         }
     }
 
-    [Export] private PackedScene itemSlotScene = null!;
-
     private Item?[] itemGrid = Array.Empty<Item?>();
     private List<Item> heldItems = new();
-    private bool ready;
 
     public Item? this[Coord coord]
     {
@@ -68,29 +65,13 @@ public sealed class Inventory : Area2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        ready = true;
         applyDimensionChange();
     }
 
     private void applyDimensionChange()
     {
-        if (!ready) return;
-        if (itemGrid.Length > 0)
-        {
-            GetTree().CallGroup("slots", "queue_free");
-        }
         itemGrid = new Item?[width * height];
-        for (var y = 0; y < height; y++)
-        {
-            for (var x = 0; x < width; x++)
-            {
-                var slot = itemSlotScene.Instance<Node2D>();
-                slot.Position = new Vector2((x + 0.5f) * ItemSlotSize, (y + 0.5f) * ItemSlotSize);
-                AddChild(slot);
-            }
-        }
-
-        if (GetNode<CollisionShape2D>("BoundingBox") is { } boundingBox)
+        if (GetNodeOrNull<CollisionShape2D>("BoundingBox") is { } boundingBox)
         {
             var rect = (RectangleShape2D) boundingBox.Shape;
             rect.Extents = 0.5f * ItemSlotSize * new Vector2(width, height);
