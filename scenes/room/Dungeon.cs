@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using static ItemLibrary.ItemType;
 
 public static class DungeonRoomParser
@@ -13,13 +12,15 @@ public static class DungeonRoomParser
             .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
             .ToArray();
 
-        var indexOfEntrance = map.IndexOf("P", StringComparison.Ordinal);
-        if (indexOfEntrance == -1)
-            throw new InvalidOperationException("You created a map with no entrance. Maybe you should take a breather.");
+        var y = Enumerable.Range(1, splitMap.Length)
+            .FirstOrDefault(i => splitMap[i - 1].Contains('P')) - 1;
 
-        var y = Regex
-            .Matches(map.Substring(0, indexOfEntrance), Environment.NewLine)
-            .Count;
+        if (y == -1)
+        {
+            throw new InvalidOperationException(
+                "You created a map with no entrance. Maybe you should take a breather.");
+        }
+
         var x = splitMap[y].IndexOf("P", StringComparison.Ordinal);
         entrance = new Coord(x, y);
         var dict = new Dictionary<Coord, RoomContents>();
