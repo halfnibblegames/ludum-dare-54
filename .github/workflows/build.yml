@@ -43,6 +43,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+      - name: Restore
+        run: dotnet restore
       - name: Set up templates
         run: |
           mkdir -v -p ~/.local/share/godot/templates
