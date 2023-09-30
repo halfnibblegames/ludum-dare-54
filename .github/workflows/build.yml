@@ -43,6 +43,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7
       - name: Restore
         run: dotnet restore
       - name: Set up templates
