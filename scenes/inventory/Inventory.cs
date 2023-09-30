@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Godot;
 using Array = System.Array;
@@ -82,25 +83,61 @@ public sealed class Inventory : Area2D
     public InventoryFitResult FitItem(Vector2 pos, ItemLibrary.Properties properties)
     {
         var offset = 0.5f * ItemSlotSize * new Vector2(properties.Width - 1, properties.Height - 1);
-        var d = pos - Position - offset;
-        var x = (int) (d.x / ItemSlotSize);
-        var y = (int) (d.y / ItemSlotSize);
-        if (x < 0 || x >= width - properties.Width + 1 || y < 0 || y > width - properties.Height + 1)
+        var searchPoint = pos - offset;
+        if (!tryFindCoord(searchPoint, out var coord) ||
+            width - coord.X < properties.Width ||
+            height - coord.Y < properties.Height)
         {
             return InventoryFitResult.OutOfGrid;
         }
-        var slotPos = new Vector2((x + 0.5f) * ItemSlotSize, (y + 0.5f) * ItemSlotSize);
+        var slotPos = toLocalPos(coord);
         var tiles = new InventoryFitResultTile[properties.Width * properties.Height];
         for (var j = 0; j < properties.Height; j++)
         {
             for (var i = 0; i < properties.Width; i++)
             {
-                tiles[j * properties.Width + i] =
-                    new InventoryFitResultTile(new Coord(x + i, y + j), this[x + i, y + j] is null);
+                var c = new Coord(coord.X + i, coord.Y + j);
+                tiles[j * properties.Width + i] = new InventoryFitResultTile(c, this[c] is null);
             }
         }
         return new InventoryFitResult(
-            tiles.All(t => t.IsValid) ? ResultType.Valid : ResultType.Overlap, Position + slotPos + offset, tiles);
+            tiles.All(t => t.IsValid) ? ResultType.Valid : ResultType.Overlap,
+            Position + slotPos + offset,
+            tiles);
+    }
+
+    public bool TryFindItem(Vector2 globalPos, [NotNullWhen(true)] out Item? item)
+    {
+        if (!tryFindCoord(globalPos, out var coord))
+        {
+            item = default;
+            return false;
+        }
+
+        item = this[coord];
+        return item != null;
+    }
+
+    private bool tryFindCoord(Vector2 globalPos, out Coord coord)
+    {
+        var relativePos = globalPos - Position;
+
+        var x = (int) (relativePos.x / ItemSlotSize);
+        var y = (int) (relativePos.y / ItemSlotSize);
+
+        if (x < 0 || x >= width || y < 0 || y >= height)
+        {
+            coord = default;
+            return false;
+        }
+
+        coord = new Coord(x, y);
+        return true;
+    }
+
+    private Vector2 toLocalPos(Coord coord)
+    {
+        return new Vector2((coord.X + 0.5f) * ItemSlotSize, (coord.Y + 0.5f) * ItemSlotSize);
     }
 
     public void AddItem(Item item, IEnumerable<Coord> tiles, Vector2 globalPosition)

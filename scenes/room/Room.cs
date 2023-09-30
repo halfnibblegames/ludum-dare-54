@@ -1,19 +1,18 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 
 public sealed class Room : Node2D
 {
     [Signal]
-    public delegate void ItemDropped(ItemLibrary.ItemType type);
-
-    [Signal]
-    public delegate void EncounterStarted();
-
-    [Signal]
     public delegate void RoomExited();
 
     private readonly Queue<IRoomStep> queuedSteps = new();
+    private Templates templates = null!;
+
+    public override void _Ready()
+    {
+        templates = GetNode<Templates>("/root/Templates");
+    }
 
     public void FillRoom(RoomContents contents)
     {
@@ -39,32 +38,13 @@ public sealed class Room : Node2D
             return;
         }
 
+
         var step = queuedSteps.Dequeue();
-        switch (step)
-        {
-            case ItemDropStep itemDrop:
-                dropItem(itemDrop.Item);
-                break;
-            case EncounterStep:
-                startEncounter();
-                break;
-            default:
-                throw new InvalidOperationException($"Step cannot be handled: {step.GetType()}");
-        }
+        step.Do(this, templates, doNextStep);
     }
 
     private void finishRoom()
     {
         EmitSignal(nameof(RoomExited));
-    }
-
-    private void dropItem(ItemLibrary.ItemType item)
-    {
-        EmitSignal(nameof(ItemDropped), item);
-    }
-
-    private void startEncounter()
-    {
-        EmitSignal(nameof(EncounterStarted));
     }
 }

@@ -73,7 +73,7 @@ public sealed class HoveringItem : Area2D
 
     private void onAreaExited(Area2D other)
     {
-        if (other is Inventory)
+        if (other == inventory)
         {
             inventory = null;
             snapPos = null;
