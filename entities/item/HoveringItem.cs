@@ -83,8 +83,8 @@ public class HoveringItem : Area2D
 
     public void RandomizeItem()
     {
-        var keys = Enum.GetValues(typeof(ItemLibrary.Key));
-        var randomKey = (ItemLibrary.Key) keys.GetValue(GD.Randi() % keys.Length);
-        GetNode<Item>("Item").Type = randomKey;
+        var types = Enum.GetValues(typeof(ItemLibrary.ItemType));
+        var randomType = (ItemLibrary.ItemType) types.GetValue(GD.Randi() % types.Length);
+        GetNode<Item>("Item").Type = randomType;
     }
 }
