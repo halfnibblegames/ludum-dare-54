@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 public sealed class HoveringItem : Area2D
