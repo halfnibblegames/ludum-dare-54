@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public class HoveringItem : Area2D
+public sealed class HoveringItem : Area2D
 {
     [Signal]
     public delegate void ItemPlaced(HoveringItem item);
@@ -81,10 +81,8 @@ public class HoveringItem : Area2D
         }
     }
 
-    public void RandomizeItem()
+    public void SetType(ItemLibrary.ItemType type)
     {
-        var types = Enum.GetValues(typeof(ItemLibrary.ItemType));
-        var randomType = (ItemLibrary.ItemType) types.GetValue(GD.Randi() % types.Length);
-        GetNode<Item>("Item").Type = randomType;
+        GetNode<Item>("Item").Type = type;
     }
 }

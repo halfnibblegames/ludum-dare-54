@@ -1,6 +1,6 @@
 using Godot;
 
-public class Item : Node2D
+public sealed class Item : Node2D
 {
     [Signal]
     public delegate void PropertiesChanged();
