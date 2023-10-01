@@ -19,6 +19,8 @@ public sealed class ItemDropStep : IRoomStep
         hover.Connect(nameof(HoveringItem.ItemPlaced), listener, nameof(listener.OnItemPlaced));
         roomNode.AddChild(listener);
         listener.AddChild(drop);
+
+        roomNode.Connect(nameof(Room.RoomExited), listener, nameof(listener.Quit));
     }
 
     private sealed class SignalListener : Node
@@ -35,6 +37,11 @@ public sealed class ItemDropStep : IRoomStep
         {
             QueueFree();
             complete();
+        }
+
+        public void Quit()
+        {
+            QueueFree();
         }
     }
 }

@@ -23,6 +23,8 @@ public sealed class EncounterStep : IRoomStep
         roomNode.AddChild(runner);
         runner.AddChild(hazardObj);
         runner.AddChild(cursor);
+
+        roomNode.Connect(nameof(Room.RoomExited), runner, nameof(runner.Quit));
     }
 
     private sealed class EncounterRunner : Node
@@ -79,6 +81,11 @@ public sealed class EncounterStep : IRoomStep
         private void startHazardTurn()
         {
             hazard.DoTurn(encounter, startPlayerTurn);
+        }
+
+        public void Quit()
+        {
+            QueueFree();
         }
     }
 }

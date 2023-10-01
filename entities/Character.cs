@@ -80,9 +80,14 @@ public abstract class Character : Node2D
         var oldHealth = CurrentHealth;
         CurrentHealth = Math.Max(CurrentHealth - amountOfDamage, 0);
         redness = 1;
-        // TODO: handle death
         EmitSignal(nameof(HealthChanged), CurrentHealth, MaxHealth, CurrentHealth - oldHealth);
+        if (CurrentHealth <= 0)
+        {
+            OnDeath();
+        }
     }
+
+    protected virtual void OnDeath() {}
 
     public void Heal(int amountToHeal)
     {

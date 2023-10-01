@@ -10,6 +10,8 @@ public sealed class Main : Node
     private AnimationPlayer animations = null!;
     private ShakeCamera shakeCamera = null!;
 
+    private bool gameOver;
+
     public override void _Ready()
     {
         GD.Randomize();
@@ -41,6 +43,7 @@ public sealed class Main : Node
 
     private void onRoomExited()
     {
+        if (gameOver) return;
         dungeonTraverser.MoveForward();
         GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
     }
@@ -53,6 +56,14 @@ public sealed class Main : Node
             var shakeIntensity = baseShakeIntensity - healthChange * shakeIntensityPerHealthLost;
             shakeCamera.Shake(shakeIntensity);
         }
+    }
+
+    private void onPlayerDied()
+    {
+        gameOver = true;
+        var room = GetNode<Room>("Room");
+        room.Clear();
+        GetNode<CanvasItem>("GameOverOverlay").Visible = true;
     }
 
     private bool currentInventoryVisibility = true;

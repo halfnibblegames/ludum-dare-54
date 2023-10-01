@@ -31,8 +31,8 @@ public static class HazardTypeExtensions
 
     public static int AttackDamage(this HazardType hazardType) => hazardType switch
     {
-        Spider => 2,
-        Slime => 1,
+        Spider => 100,
+        Slime => 100,
         OvergrownVines => 0,
         _ => throw new ArgumentOutOfRangeException(nameof(hazardType), hazardType, null)
     };

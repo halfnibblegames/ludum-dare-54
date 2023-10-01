@@ -61,6 +61,12 @@ public sealed class Room : Node2D
         enterRoom();
     }
 
+    public void Clear()
+    {
+        Player.Position = new Vector2(Player.Position.x, finalY);
+        finishRoom();
+    }
+
     private void enterRoom()
     {
         Player.Position = new Vector2(96, initialY);

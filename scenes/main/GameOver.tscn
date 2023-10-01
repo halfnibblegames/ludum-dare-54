@@ -2,13 +2,13 @@
 
 [ext_resource path="res://assets/Minimal4.tres" type="DynamicFont" id=1]
 
-[node name="Control" type="Control"]
+[node name="GameOver" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="ColorRect" type="ColorRect" parent="."]
 margin_right = 192.0
-margin_bottom = 107.0
+margin_bottom = 108.0
 color = Color( 0, 0, 0, 0.152941 )
 
 [node name="Label" type="Label" parent="."]
