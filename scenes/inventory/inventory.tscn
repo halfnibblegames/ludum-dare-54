@@ -12,6 +12,7 @@ Width = 4
 Height = 5
 
 [node name="BoundingBox" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 32, 40 )
 shape = SubResource( 1 )
 

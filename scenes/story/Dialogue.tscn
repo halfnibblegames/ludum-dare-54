@@ -27,10 +27,10 @@ margin_bottom = 39.0
 texture = ExtResource( 2 )
 
 [node name="text" type="Label" parent="container"]
-margin_left = 47.0
-margin_top = 10.0
-margin_right = 169.0
-margin_bottom = 40.0
+margin_left = 44.0
+margin_top = 7.0
+margin_right = 166.0
+margin_bottom = 39.0
 custom_fonts/font = ExtResource( 3 )
 text = "Phew, that was a close call! I'm glad I managed to escape these nondescript monsters in time to arrive at the first monologue unscathed!"
 align = 3
