@@ -80,11 +80,23 @@ public abstract class Character : Node2D
         var oldHealth = CurrentHealth;
         CurrentHealth = Math.Max(CurrentHealth - amountOfDamage, 0);
         redness = 1;
+        playHitSound();
         EmitSignal(nameof(HealthChanged), CurrentHealth, MaxHealth, CurrentHealth - oldHealth);
         if (CurrentHealth <= 0)
         {
             OnDeath();
         }
+    }
+
+    private void playHitSound()
+    {
+        if (GetNode<AudioStreamPlayer>("HitSound") is not { } sound)
+        {
+            return;
+        }
+
+        sound.Seek(0.1f);
+        sound.Play();
     }
 
     protected virtual void OnDeath() {}
