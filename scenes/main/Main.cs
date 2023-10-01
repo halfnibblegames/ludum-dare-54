@@ -14,7 +14,7 @@ public sealed class Main : Node
 
         var dialogue = GetNode<Dialogue>("Dialogue");
         dialogue.Visible = true;
-        
+
         var sceneAnimationTasks = new[]
         {
             ToggleInventory(forceState: false),
@@ -24,10 +24,10 @@ public sealed class Main : Node
 
         var inventory = GetNode<Inventory>("Inventory");
         inventory.Populate(dungeon.StartingItems);
-        
+
         await Task.WhenAll(sceneAnimationTasks);
         dialogue.Visible = false;
-        
+
         dungeonTraverser = new DungeonTraverser(dungeon);
 
         GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
@@ -56,7 +56,7 @@ public sealed class Main : Node
             inventory.Position = inventory.Position with { x = inventory.Position.x + step };
             await Task.Delay(1);
         } while (Math.Abs(inventory.Position.x - targetX) > 0.01);
-            
+
         // TODO(will): Wait for player input
         await Task.Delay(1000);
     }

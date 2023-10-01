@@ -25,11 +25,6 @@ public sealed class Room : Node2D
         doNextStep();
     }
 
-    public void StepCompleted()
-    {
-        doNextStep();
-    }
-
     private void doNextStep()
     {
         if (queuedSteps.Count == 0)

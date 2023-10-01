@@ -3,27 +3,74 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public class Dialogue : Node2D
+public sealed class Dialogue : Node2D
 {
-    public async Task DisplayDialog(IReadOnlyList<Sentence> dialog)
+    private Label text = null!;
+    private Queue<Sentence> queuedDialogue = new();
+    private TaskCompletionSource<bool>? tsc;
+
+    public override void _Ready()
     {
-        var text = GetNode<Label>("container/text");
-        
+        text = GetNode<Label>("container/text");
+    }
+
+    public override void _Process(float delta)
+    {
+        if (!Visible)
+        {
+            return;
+        }
+        text.PercentVisible = Math.Min(text.PercentVisible + 0.5f * delta, 1.0f);
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (@event is not InputEventMouseButton { Pressed: true, ButtonIndex: (int) ButtonList.Left })
+        {
+            return;
+        }
+
+        if (text.PercentVisible < 1)
+        {
+            text.PercentVisible = 1;
+            return;
+        }
+
+        if (queuedDialogue.Count > 0)
+        {
+            startSentence(queuedDialogue.Dequeue());
+            return;
+        }
+
+        tsc?.SetResult(true);
+        tsc = null;
+    }
+
+    public Task DisplayDialog(IReadOnlyList<Sentence> dialog)
+    {
+        tsc?.SetResult(true);
+        tsc = null;
+        queuedDialogue.Clear();
+
         foreach (var sentence in dialog)
         {
-            // TODO(will): Change portrait if we ever get this far
-            text.PercentVisible = 0;
-            text.Text = sentence.Text;
-
-            do
-            {
-                text.PercentVisible = Math.Min(text.PercentVisible + 0.01f, 1.0f);
-                await Task.Delay(50);
-            } while (text.PercentVisible < 1.0f);
-            
-            // TODO(will): Wait for player input
-            await Task.Delay(1000);
+            queuedDialogue.Enqueue(sentence);
         }
+
+        if (queuedDialogue.Count > 0)
+        {
+            startSentence(queuedDialogue.Dequeue());
+        }
+
+        tsc = new TaskCompletionSource<bool>();
+        return tsc.Task;
+    }
+
+    private void startSentence(Sentence sentence)
+    {
+        // TODO(will): Change portrait if we ever get this far
+        text.PercentVisible = 0;
+        text.Text = sentence.Text;
     }
 }
 
