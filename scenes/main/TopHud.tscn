@@ -145,5 +145,6 @@ anims/default = SubResource( 9 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AudioButton"]
 stream = ExtResource( 7 )
+volume_db = -34.977
 pitch_scale = 1.01
 autoplay = true
