@@ -19,8 +19,9 @@ public class BottomHud : Control
 
         var name = item.ToString();
         var desc = item.Description();
+        var useDesc = item.CombatUse() is { } use ? $"\n{use.Description}" : "";
 
-        label.BbcodeText = $"[color=yellow]{name}[/color] {desc}";
+        label.BbcodeText = $"{name}\n[color=silver]{desc}[/color][color=teal]{useDesc}[/color]";
         frame.RectMinSize = new Vector2(0, label.RectSize.y + 3);
         Visible = true;
     }

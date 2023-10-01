@@ -19,7 +19,7 @@ sealed class CompositeCombatUse : ICombatUse
 {
     private readonly ICombatUse[] uses;
 
-    public string Description => string.Concat("; ", uses.Select(u => u.Description));
+    public string Description => string.Join("\n", uses.Select(u => u.Description));
 
     public CompositeCombatUse(ICombatUse[] uses)
     {
