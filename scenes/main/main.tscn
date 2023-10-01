@@ -72,4 +72,3 @@ script = ExtResource( 7 )
 
 [connection signal="RoomExited" from="Room" to="." method="onRoomExited"]
 [connection signal="HealthChanged" from="Player" to="." method="onPlayerHealthChanged"]
-[connection signal="DialogueFinished" from="Dialogue" to="." method="onDialogueFinished"]

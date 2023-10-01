@@ -1,15 +1,84 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://assets/images/health_fill.png" type="Texture" id=1]
 [ext_resource path="res://assets/images/backpack.png" type="Texture" id=2]
 [ext_resource path="res://assets/images/health.png" type="Texture" id=3]
 [ext_resource path="res://assets/Minimal4.tres" type="DynamicFont" id=4]
 [ext_resource path="res://scenes/main/TopHud.cs" type="Script" id=5]
+[ext_resource path="res://scenes/main/audio_button.png" type="Texture" id=6]
+[ext_resource path="res://assets/audio/dungeon_banger.wav" type="AudioStream" id=7]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 16, 16 )
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 0, 16, 16 )
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 0, 16, 16 )
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 16, 16, 16 )
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 16, 16, 16 )
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 16, 16, 16 )
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 32, 16, 16 )
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 32, 16, 16 )
+filter_clip = true
+
+[sub_resource type="Animation" id=9]
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ]
+}
 
 [node name="TopHud" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -116.0
 margin_bottom = -91.0
 script = ExtResource( 5 )
 
@@ -52,3 +121,29 @@ __meta__ = {
 "source": "res://aseprite/backpack.aseprite"
 }
 }
+
+[node name="AudioButton" type="TextureRect" parent="."]
+margin_left = 158.0
+margin_right = 174.0
+margin_bottom = 16.0
+texture = SubResource( 1 )
+__meta__ = {
+"_aseprite_wizard_config_": {
+"layer": "",
+"o_ex_p": "",
+"o_folder": "",
+"o_name": "",
+"only_visible": false,
+"op_exp": false,
+"player": "AudioButton/AnimationPlayer",
+"source": "res://aseprite/audio_button.aseprite"
+}
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AudioButton"]
+anims/default = SubResource( 9 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AudioButton"]
+stream = ExtResource( 7 )
+pitch_scale = 1.01
+autoplay = true
