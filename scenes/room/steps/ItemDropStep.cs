@@ -34,7 +34,7 @@ public sealed class ItemDropStep : IRoomStep
         // ReSharper disable once UnusedParameter.Local
         public void OnItemPlaced(HoveringItem item)
         {
-            roomNode.RemoveChild(this);
+            QueueFree();
             complete();
         }
     }

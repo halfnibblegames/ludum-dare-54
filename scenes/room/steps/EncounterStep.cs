@@ -51,6 +51,7 @@ public sealed class EncounterStep : IRoomStep
 
             if (hazard.CurrentHealth <= 0)
             {
+                QueueFree();
                 complete();
                 return;
             }
