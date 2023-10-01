@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scenes/inventory/inventory.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/story/Dialogue.tscn" type="PackedScene" id=2]
@@ -7,10 +7,42 @@
 [ext_resource path="res://scenes/main/TopHud.tscn" type="PackedScene" id=5]
 [ext_resource path="res://entities/player/player.tscn" type="PackedScene" id=6]
 
+[sub_resource type="Animation" id=1]
+resource_name = "InventoryClose"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Inventory:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 2, 0.5 ),
+"update": 0,
+"values": [ Vector2( 5, 24 ), Vector2( -80, 24 ) ]
+}
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Inventory:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 5, 24 ) ]
+}
+
 [node name="Main" type="Node"]
 script = ExtResource( 3 )
 
 [node name="Room" parent="." instance=ExtResource( 4 )]
+
+[node name="Player" parent="." instance=ExtResource( 6 )]
 
 [node name="Inventory" parent="." instance=ExtResource( 1 )]
 position = Vector2( 5, 24 )
@@ -23,7 +55,10 @@ margin_top = 5.0
 margin_right = -111.0
 margin_bottom = -86.0
 
-[node name="Player" parent="." instance=ExtResource( 6 )]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+method_call_mode = 1
+anims/InventoryClose = SubResource( 1 )
+anims/RESET = SubResource( 2 )
 
 [connection signal="RoomExited" from="Room" to="." method="onRoomExited"]
 [connection signal="HealthChanged" from="Player" to="." method="onPlayerHealthChanged"]

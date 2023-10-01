@@ -1,11 +1,11 @@
 using Godot;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 public sealed class Main : Node
 {
     private DungeonTraverser dungeonTraverser = null!;
+    private AnimationPlayer animations = null!;
 
     public override async void _Ready()
     {
@@ -13,6 +13,7 @@ public sealed class Main : Node
         var dungeon = Dungeon.Make();
 
         var dialogue = GetNode<Dialogue>("Dialogue");
+        animations = GetNode<AnimationPlayer>("AnimationPlayer");
 
         var sceneAnimationTasks = new[]
         {
@@ -50,17 +51,18 @@ public sealed class Main : Node
         var shouldBeVisible = forceState ?? inventory.Position.x < 0;
         if (shouldBeVisible == currentInventoryVisibility)
             return;
+        currentInventoryVisibility = shouldBeVisible;
 
-        var targetX = shouldBeVisible ? 5 : -100;
-        var step = shouldBeVisible ? 1 : -1;
-        do
+        if (shouldBeVisible)
         {
-            // TODO: Make this animation less stupid
-            inventory.Position = inventory.Position with { x = inventory.Position.x + step };
-            await Task.Delay(1);
-        } while (Math.Abs(inventory.Position.x - targetX) > 0.01);
+            animations.PlayBackwards("InventoryClose");
+        }
+        else
+        {
+            animations.Play("InventoryClose");
+        }
 
         // TODO(will): Wait for player input
-        await Task.Delay(1000);
+        await Task.Delay(50);
     }
 }
