@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 
 public sealed class Main : Node
 {
-    private const float shakeIntensityPerHealthLost = 0.1f;
+    private const float shakeIntensityPerHealthLost = 0.15f;
+    private const float baseShakeIntensity = 0.4f;
 
     private DungeonTraverser dungeonTraverser = null!;
     private AnimationPlayer animations = null!;
@@ -50,7 +51,8 @@ public sealed class Main : Node
         GetNode<TopHud>("TopHud").UpdateHealth(newHealth, maxHealth);
         if (healthChange < 0)
         {
-            shakeCamera.Shake(-healthChange * shakeIntensityPerHealthLost);
+            var shakeIntensity = baseShakeIntensity - healthChange * shakeIntensityPerHealthLost;
+            shakeCamera.Shake(shakeIntensity);
         }
     }
 

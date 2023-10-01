@@ -4,10 +4,10 @@ public sealed class ShakeCamera : Camera2D
 {
     private const float maxShakeOffset = 5;
     private const float noiseSpeed = 60;
-    private const float decay = 0.02f;
+    private const float decayPerSecond = 2.0f;
 
     private readonly OpenSimplexNoise noise = new();
-    private float amount = 0;
+    private float amount;
     private float t;
 
     public override void _Ready()
@@ -20,8 +20,8 @@ public sealed class ShakeCamera : Camera2D
 
     public override void _Process(float delta)
     {
-        amount *= Mathf.Pow(decay, delta);
-        if (amount < 0.001f)
+        amount -= decayPerSecond * delta;
+        if (amount <= 0)
         {
             amount = 0;
             // Avoid t getting too big by just resetting it.
