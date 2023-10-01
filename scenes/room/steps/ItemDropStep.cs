@@ -10,7 +10,7 @@ public sealed class ItemDropStep : IRoomStep
         this.item = item;
     }
 
-    public void Do(Node roomNode, Templates templates, Action complete)
+    public void Do(Node roomNode, Player player, Templates templates, Action complete)
     {
         var newItem = templates.HoveringItemScene.Instance<HoveringItem>();
         newItem.SetType(item);

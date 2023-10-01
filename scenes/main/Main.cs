@@ -29,7 +29,9 @@ public sealed class Main : Node
 
         dungeonTraverser = new DungeonTraverser(dungeon);
 
-        GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
+        var room = GetNode<Room>("Room");
+        room.Player = GetNode<Player>("Player");
+        room.FillRoom(dungeonTraverser.CurrentRoom);
         await ToggleInventory(forceState: true);
     }
 

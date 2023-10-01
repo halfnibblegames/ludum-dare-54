@@ -9,6 +9,9 @@ public sealed class Room : Node2D
     private readonly Queue<IRoomStep> queuedSteps = new();
     private Templates templates = null!;
 
+    // find a better way of injecting this?
+    public Player Player { get; set; } = null!;
+
     public override void _Ready()
     {
         templates = GetNode<Templates>("/root/Templates");
@@ -33,9 +36,8 @@ public sealed class Room : Node2D
             return;
         }
 
-
         var step = queuedSteps.Dequeue();
-        step.Do(this, templates, doNextStep);
+        step.Do(this, Player, templates, doNextStep);
     }
 
     private void finishRoom()

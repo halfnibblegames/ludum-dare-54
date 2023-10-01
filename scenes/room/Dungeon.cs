@@ -46,7 +46,7 @@ public static class DungeonRoomParser
 
         return c switch
         {
-            'X' => RoomLibrary.HazardWithLoot(ItemLibrary.RandomItem()),
+            'X' => RoomLibrary.HazardWithLoot(HazardLibrary.RandomHazard(), ItemLibrary.RandomItem()),
             '$' => RoomLibrary.SingleItem(ItemLibrary.RandomItem()),
             _ => RoomLibrary.Empty()
         };
@@ -99,7 +99,7 @@ P
 
         return new Dungeon(
             Name: "A Tale of Encumbrance",
-            StartingItems: new [] { Sword },
+            StartingItems: new [] { Sword, Potion },
             Rooms: DungeonRoomParser.FromMap(firstDungeonMap, out var entrance),
             Entrance: entrance,
             Monologue: new List<string>

@@ -191,7 +191,7 @@ public sealed class Inventory : Area2D
     {
         for (var y = height - properties.Height; y >= 0; y--)
         {
-            for (var x = width - properties.Width; x >= 0; x++)
+            for (var x = width - properties.Width; x >= 0; x--)
             {
                 var coords = new Coord[properties.Width * properties.Height];
 

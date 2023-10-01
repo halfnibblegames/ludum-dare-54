@@ -6,10 +6,10 @@ public static class RoomSteps
     public static RoomContents Room(params IRoomStep[] steps) => new(steps);
 
     public static IRoomStep Item(ItemLibrary.ItemType item) => new ItemDropStep(item);
-    public static IRoomStep Hazard() => new EncounterStep();
+    public static IRoomStep Hazard(HazardLibrary.HazardType hazard) => new EncounterStep(hazard);
 }
 
 public interface IRoomStep
 {
-    void Do(Node roomNode, Templates templates, Action complete);
+    void Do(Node roomNode, Player player, Templates templates, Action complete);
 }

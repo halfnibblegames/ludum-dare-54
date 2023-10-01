@@ -7,7 +7,6 @@ public sealed class TopHud : Control
 
     public void UpdateHealth(int newHealth, int maxHealth)
     {
-        // TODO: I'm not even sure this works???????
         var healthFill = GetNode<NinePatchRect>("HealthFill");
         var percentage = (float) newHealth / maxHealth;
         var pixelWidth = (int) Math.Round(percentage * maxWidth);

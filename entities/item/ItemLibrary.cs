@@ -2,6 +2,7 @@
 using Godot;
 using static Constants;
 using static CombatUses;
+using static ItemLibrary;
 using static ItemLibrary.ItemType;
 
 public static class ItemLibrary
@@ -54,7 +55,7 @@ public static class ItemLibrary
 public static class ItemTypeExtensions
 {
     // TODO(will): Use actual values for scoring.
-    public static string Description(this ItemLibrary.ItemType itemType) => itemType switch
+    public static string Description(this ItemType itemType) => itemType switch
     {
         Key => "Opens doors",
         Sword => "Basic Weapon",
@@ -69,7 +70,7 @@ public static class ItemTypeExtensions
     };
 
     // TODO(will): Use actual values for scoring.
-    public static int Score(this ItemLibrary.ItemType itemType) => itemType switch
+    public static int Score(this ItemType itemType) => itemType switch
     {
         Sword => 1,
         Potion => -1,
@@ -81,7 +82,7 @@ public static class ItemTypeExtensions
         _ => 0
     };
 
-    public static ICombatUse? CombatUse(this ItemLibrary.ItemType itemType) => itemType switch
+    public static ICombatUse? CombatUse(this ItemType itemType) => itemType switch
     {
         Sword => DamageHazard(4),
         FlameSword => DamageHazard(6),
