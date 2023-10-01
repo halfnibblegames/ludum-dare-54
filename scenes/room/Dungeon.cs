@@ -46,7 +46,7 @@ public static class DungeonRoomParser
 
         return c switch
         {
-            'X' => RoomLibrary.HazardWithLoot(HazardLibrary.RandomHazard(), ItemLibrary.RandomItem()),
+            'X' => RoomLibrary.HazardWithLoot(HazardLibrary.HazardType.Spider, ItemLibrary.RandomItem()),
             '$' => RoomLibrary.SingleItem(ItemLibrary.RandomItem()),
             _ => RoomLibrary.Empty()
         };

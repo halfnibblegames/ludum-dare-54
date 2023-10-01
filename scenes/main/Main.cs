@@ -4,8 +4,11 @@ using System.Threading.Tasks;
 
 public sealed class Main : Node
 {
+    private const float shakeIntensityPerHealthLost = 0.1f;
+
     private DungeonTraverser dungeonTraverser = null!;
     private AnimationPlayer animations = null!;
+    private ShakeCamera shakeCamera = null!;
 
     public override async void _Ready()
     {
@@ -14,6 +17,7 @@ public sealed class Main : Node
 
         var dialogue = GetNode<Dialogue>("Dialogue");
         animations = GetNode<AnimationPlayer>("AnimationPlayer");
+        shakeCamera = GetNode<ShakeCamera>("ShakeCamera");
 
         var sceneAnimationTasks = new[]
         {
@@ -41,9 +45,13 @@ public sealed class Main : Node
         GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
     }
 
-    private void onPlayerHealthChanged(int newHealth, int maxHealth)
+    private void onPlayerHealthChanged(int newHealth, int maxHealth, int healthChange)
     {
         GetNode<TopHud>("TopHud").UpdateHealth(newHealth, maxHealth);
+        if (healthChange < 0)
+        {
+            shakeCamera.Shake(-healthChange * shakeIntensityPerHealthLost);
+        }
     }
 
     private bool currentInventoryVisibility = true;
