@@ -47,6 +47,7 @@ public sealed class ItemSelect : Node
             inventory.TryFindItem(mouseEvent.Position, out var item))
         {
             EmitSignal(nameof(ItemChosen), item);
+            GetTree().SetInputAsHandled();
         }
     }
 

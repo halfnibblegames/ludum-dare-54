@@ -49,6 +49,7 @@ public sealed class HoveringItem : Area2D
             {
                 result.Commit(inventory, item);
                 EmitSignal(nameof(ItemPlaced), this);
+                GetTree().SetInputAsHandled();
             }
         }
     }
