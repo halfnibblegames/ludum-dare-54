@@ -20,8 +20,6 @@ public sealed class EncounterStep : IRoomStep
 
         cursor.Connect(nameof(ItemSelect.ItemChosen), runner, nameof(runner.OnItemChosen));
 
-        GD.Print($"Beware! A {hazard}");
-
         roomNode.AddChild(runner);
         runner.AddChild(hazardObj);
         runner.AddChild(cursor);

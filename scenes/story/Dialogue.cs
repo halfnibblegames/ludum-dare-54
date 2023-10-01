@@ -23,7 +23,7 @@ public sealed class Dialogue : Node2D
         text.PercentVisible = Math.Min(text.PercentVisible + 0.5f * delta, 1.0f);
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
         if (!Visible)
         {
