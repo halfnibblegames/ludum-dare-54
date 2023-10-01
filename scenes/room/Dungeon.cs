@@ -2,10 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static HazardLibrary.HazardType;
 using static ItemLibrary.ItemType;
 
 public static class DungeonRoomParser
 {
+    public static IReadOnlyDictionary<Coord, RoomContents> Linear(out Coord entrance)
+    {
+        var rooms = new[]
+        {
+            RoomLibrary.SingleItem(Potion),
+            RoomLibrary.SingleItem(Bomb),
+            RoomLibrary.HazardWithLoot(OvergrownVines, Rope),
+            RoomLibrary.SingleItem(Sword),
+            RoomLibrary.HazardWithLoot(Slime, Sword),
+            RoomLibrary.HazardWithLoot(Spider, PonderingOrb)
+        };
+
+        var dict = new Dictionary<Coord, RoomContents>();
+        for (var i = 0; i < rooms.Length; i++)
+        {
+            dict.Add(new Coord(i, 0), rooms[i]);
+        }
+
+        entrance = new Coord(0, 0);
+        return dict;
+    }
+
     public static IReadOnlyDictionary<Coord, RoomContents> FromMap(string map, out Coord entrance)
     {
         var splitMap = map
@@ -46,7 +69,7 @@ public static class DungeonRoomParser
 
         return c switch
         {
-            'X' => RoomLibrary.HazardWithLoot(HazardLibrary.HazardType.Spider, ItemLibrary.RandomItem()),
+            'X' => RoomLibrary.HazardWithLoot(Spider, ItemLibrary.RandomItem()),
             '$' => RoomLibrary.SingleItem(ItemLibrary.RandomItem()),
             _ => RoomLibrary.Empty()
         };
@@ -61,7 +84,7 @@ public sealed class DungeonRoom
     public RoomContents Contents { get; }
 
     public DungeonRoom? North => dungeon[coords.Above];
-    public DungeonRoom? East => dungeon[coords.Left];
+    public DungeonRoom? East => dungeon[coords.Right];
     public DungeonRoom? South => dungeon[coords.Below];
     public DungeonRoom? West => dungeon[coords.Left];
 
@@ -90,17 +113,19 @@ public sealed record Dungeon(
 
     public static Dungeon Make()
     {
+        /*
         const string firstDungeonMap = @"
  $.E
  ...
 .X.
 P
 ";
+        */
 
         return new Dungeon(
             Name: "A Tale of Encumbrance",
-            StartingItems: new [] { Sword, Potion },
-            Rooms: DungeonRoomParser.FromMap(firstDungeonMap, out var entrance),
+            StartingItems: new [] { Sword },
+            Rooms: DungeonRoomParser.Linear(out var entrance), // DungeonRoomParser.FromMap(firstDungeonMap, out var entrance),
             Entrance: entrance,
             Monologue: new List<string>
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 public sealed class Dialogue : Node2D
 {
     private Label text = null!;
-    private Queue<Sentence> queuedDialogue = new();
+    private readonly Queue<Sentence> queuedDialogue = new();
     private TaskCompletionSource<bool>? tsc;
 
     public override void _Ready()
