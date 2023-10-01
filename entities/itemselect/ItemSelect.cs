@@ -1,23 +1,36 @@
 using Godot;
 
-public sealed class ItemSelect : Area2D
+public sealed class ItemSelect : Node
 {
     [Signal]
     public delegate void ItemChosen(Item item);
 
+    private Node2D cursor = null!;
+    private BottomHud hud = null!;
     private Vector2 mousePos = Vector2.Zero;
     private Inventory? inventory;
 
     public override void _Ready()
     {
-        mousePos = GetGlobalMousePosition();
-        Position = mousePos;
+        cursor = GetNode<Node2D>("Cursor");
+        hud = GetNode<BottomHud>("BottomHud");
+        mousePos = cursor.GetGlobalMousePosition();
+        cursor.Position = mousePos;
     }
 
     public override void _Process(float delta)
     {
         base._Process(delta);
-        Position = mousePos;
+        cursor.Position = mousePos;
+
+        if (inventory?.TryFindItem(mousePos, out var item) ?? false)
+        {
+            hud.SetItem(item.Type);
+        }
+        else
+        {
+            hud.ClearItem();
+        }
     }
 
     public override void _Input(InputEvent @event)
@@ -50,6 +63,7 @@ public sealed class ItemSelect : Area2D
         if (other == inventory)
         {
             inventory = null;
+            hud.ClearItem();
         }
     }
 }
