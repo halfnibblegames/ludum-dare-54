@@ -74,7 +74,6 @@ public sealed class ItemSelect : Node
         if (other is PunchButton)
         {
             punch = true;
-            GD.Print("p1");
         }
     }
 
@@ -89,7 +88,6 @@ public sealed class ItemSelect : Node
         if (other is PunchButton)
         {
             punch = false;
-            GD.Print("p2");
         }
     }
 }
