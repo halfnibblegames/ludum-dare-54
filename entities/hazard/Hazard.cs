@@ -24,4 +24,12 @@ public sealed class Hazard : Character
     {
         DoAction(() => encounter.DamagePlayer(Type.AttackDamage()), completed);
     }
+
+    public override void _Process(float delta)
+    {
+        base._Process(delta);
+        var healthPercentage = (float) CurrentHealth / MaxHealth;
+        var barWidth = Mathf.RoundToInt(healthPercentage * 46);
+        GetNode<NinePatchRect>("HealthFill").MarginRight = barWidth + 17;
+    }
 }
