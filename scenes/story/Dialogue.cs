@@ -18,10 +18,11 @@ public class Dialogue : Node2D
             do
             {
                 text.PercentVisible = Math.Min(text.PercentVisible + 0.01f, 1.0f);
-                await ToSignal(GetTree(), "process_frame");
+                await Task.Delay(50);
             } while (text.PercentVisible < 1.0f);
             
             // TODO(will): Wait for player input
+            await Task.Delay(1000);
         }
     }
 }

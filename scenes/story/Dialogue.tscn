@@ -9,9 +9,9 @@
 script = ExtResource( 4 )
 
 [node name="container" type="Control" parent="."]
-margin_left = 7.0
+margin_left = 9.0
 margin_top = 53.0
-margin_right = 182.0
+margin_right = 183.0
 margin_bottom = 98.0
 
 [node name="backdrop" type="TextureRect" parent="container"]
