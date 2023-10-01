@@ -11,6 +11,7 @@ public class Player : Node2D
     public override void _Ready()
     {
         currentHealth = maxHealth;
+        EmitSignal(nameof(HealthChanged), currentHealth, maxHealth);
     }
 
     private void damage(int amountOfDamage)

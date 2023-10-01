@@ -13,7 +13,6 @@ public sealed class Main : Node
         var dungeon = Dungeon.Make();
 
         var dialogue = GetNode<Dialogue>("Dialogue");
-        dialogue.Visible = true;
 
         var sceneAnimationTasks = new[]
         {
@@ -26,7 +25,6 @@ public sealed class Main : Node
         inventory.Populate(dungeon.StartingItems);
 
         await Task.WhenAll(sceneAnimationTasks);
-        dialogue.Visible = false;
 
         dungeonTraverser = new DungeonTraverser(dungeon);
 
@@ -38,6 +36,11 @@ public sealed class Main : Node
     {
         dungeonTraverser.MoveForward();
         GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
+    }
+
+    private void onPlayerHealthChanged(int newHealth, int maxHealth)
+    {
+        GetNode<TopHud>("TopHud").UpdateHealth(newHealth, maxHealth);
     }
 
     private bool currentInventoryVisibility = true;

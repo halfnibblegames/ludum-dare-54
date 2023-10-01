@@ -44,6 +44,7 @@ public sealed class Dialogue : Node2D
 
         tsc?.SetResult(true);
         tsc = null;
+        Visible = false;
     }
 
     public Task DisplayDialog(IReadOnlyList<Sentence> dialog)
@@ -57,11 +58,13 @@ public sealed class Dialogue : Node2D
             queuedDialogue.Enqueue(sentence);
         }
 
-        if (queuedDialogue.Count > 0)
+        if (queuedDialogue.Count == 0)
         {
-            startSentence(queuedDialogue.Dequeue());
+            return Task.CompletedTask;
         }
 
+        startSentence(queuedDialogue.Dequeue());
+        Visible = true;
         tsc = new TaskCompletionSource<bool>();
         return tsc.Task;
     }
