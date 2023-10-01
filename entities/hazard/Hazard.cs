@@ -1,8 +1,11 @@
+using System;
 using Godot;
 using static HazardLibrary;
 
 public sealed class Hazard : Character
 {
+    protected override Vector2 Forward => Vector2.Up;
+
     private HazardType type = HazardType.Spider;
 
     [Export]
@@ -17,8 +20,8 @@ public sealed class Hazard : Character
         }
     }
 
-    public void DoTurn(Encounter encounter)
+    public void DoTurn(Encounter encounter, Action completed)
     {
-        encounter.DamagePlayer(Type.AttackDamage());
+        DoAction(() => encounter.DamagePlayer(Type.AttackDamage()), completed);
     }
 }

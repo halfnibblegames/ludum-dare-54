@@ -13,7 +13,7 @@ public sealed class Encounter
 
     public void DamageHazard(int amount)
     {
-        hazard.Damage(amount);
+        hazard.TakeDamage(amount);
         GD.Print($"Ka-pow! {hazard.Type} reduced to {hazard.CurrentHealth} health");
     }
 
@@ -25,7 +25,7 @@ public sealed class Encounter
 
     public void DamagePlayer(int amount)
     {
-        player.Damage(amount);
+        player.TakeDamage(amount);
         GD.Print($"Ouch! Player reduced to {player.CurrentHealth} health");
     }
 

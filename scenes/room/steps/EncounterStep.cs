@@ -15,6 +15,7 @@ public sealed class EncounterStep : IRoomStep
         var cursor = templates.ItemSelectScene.Instance<ItemSelect>();
         var hazardObj = templates.HazardScene.Instance<Hazard>();
         hazardObj.Type = hazard;
+        hazardObj.Position = new Vector2(96, 72);
         var runner = new EncounterRunner(player, hazardObj, complete);
 
         cursor.Connect(nameof(ItemSelect.ItemChosen), runner, nameof(runner.OnItemChosen));
@@ -28,35 +29,58 @@ public sealed class EncounterStep : IRoomStep
 
     private sealed class EncounterRunner : Node
     {
+        private readonly Player player;
         private readonly Hazard hazard;
         private readonly Action complete;
         private readonly Encounter encounter;
+        private bool waitingForInteraction;
 
         public EncounterRunner(Player player, Hazard hazard, Action complete)
         {
+            this.player = player;
             this.hazard = hazard;
             this.complete = complete;
             encounter = new Encounter(player, hazard);
+            startPlayerTurn();
         }
 
         public void OnItemChosen(Item item)
         {
-            if (item.Type.CombatUse() is null)
+            if (item.Type.CombatUse() is null || !waitingForInteraction)
             {
                 return;
             }
 
+            waitingForInteraction = false;
+            player.DoAction(() => useItem(item), finishPlayerTurn);
+        }
+
+        private void useItem(Item item)
+        {
             item.Type.CombatUse()!.Do(encounter);
             //item.Use();
+        }
 
-            if (hazard.CurrentHealth <= 0)
+        private void startPlayerTurn()
+        {
+            waitingForInteraction = true;
+        }
+
+        private void finishPlayerTurn()
+        {
+            if (hazard.CurrentHealth > 0)
             {
-                QueueFree();
-                complete();
+                startHazardTurn();
                 return;
             }
 
-            hazard.DoTurn(encounter);
+            QueueFree();
+            complete();
+        }
+
+        private void startHazardTurn()
+        {
+            hazard.DoTurn(encounter, startPlayerTurn);
         }
     }
 }

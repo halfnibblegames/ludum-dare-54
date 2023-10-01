@@ -25,6 +25,9 @@ public sealed class Room : Node2D
             queuedSteps.Enqueue(step);
         }
 
+        // TODO: animate in
+        Player.Position = new Vector2(96, 24);
+
         doNextStep();
     }
 

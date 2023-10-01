@@ -45,11 +45,13 @@ script = ExtResource( 3 )
 [node name="Room" parent="." instance=ExtResource( 4 )]
 
 [node name="Player" parent="." instance=ExtResource( 6 )]
+position = Vector2( 95, -15 )
 
 [node name="Inventory" parent="." instance=ExtResource( 1 )]
 position = Vector2( 5, 24 )
 
 [node name="Dialogue" parent="." instance=ExtResource( 2 )]
+visible = false
 
 [node name="TopHud" parent="." instance=ExtResource( 5 )]
 margin_left = 5.0
