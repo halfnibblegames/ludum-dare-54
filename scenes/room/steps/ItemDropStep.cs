@@ -12,22 +12,21 @@ public sealed class ItemDropStep : IRoomStep
 
     public void Do(Node roomNode, Player player, Templates templates, Action complete)
     {
-        var newItem = templates.HoveringItemScene.Instance<HoveringItem>();
-        newItem.SetType(item);
-        var listener = new SignalListener(roomNode, complete);
-        newItem.Connect(nameof(HoveringItem.ItemPlaced), listener, nameof(listener.OnItemPlaced));
+        var drop = templates.ItemDropScene.Instance<ItemDrop>();
+        drop.SetItem(item);
+        var hover = drop.GetNode<HoveringItem>("HoveringItem");
+        var listener = new SignalListener(complete);
+        hover.Connect(nameof(HoveringItem.ItemPlaced), listener, nameof(listener.OnItemPlaced));
         roomNode.AddChild(listener);
-        listener.AddChild(newItem);
+        listener.AddChild(drop);
     }
 
     private sealed class SignalListener : Node
     {
-        private readonly Node roomNode;
         private readonly Action complete;
 
-        public SignalListener(Node roomNode, Action complete)
+        public SignalListener(Action complete)
         {
-            this.roomNode = roomNode;
             this.complete = complete;
         }
 

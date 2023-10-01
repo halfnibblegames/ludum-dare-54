@@ -7,21 +7,20 @@ public sealed class HoveringItem : Area2D
 
     private Item item = null!;
     private Vector2 mousePos = Vector2.Zero;
-    private Vector2? snapPos = null;
+    private Vector2? snapPos;
     private Inventory? inventory;
+    private bool pickedUp;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         item = GetNode<Item>("Item");
         onItemPropertiesChanged();
-        mousePos = GetGlobalMousePosition();
-        Position = mousePos;
     }
 
     public override void _Process(float delta)
     {
-        base._Process(delta);
+        if (!pickedUp) return;
         tryUpdateSnapPos();
         Position = snapPos ?? mousePos;
     }
@@ -41,17 +40,37 @@ public sealed class HoveringItem : Area2D
             mousePos = motionEvent.Position;
         }
 
-        if (inventory is not null &&
-            @event is InputEventMouseButton { Pressed: true, ButtonIndex: (int)ButtonList.Left })
+        var mouseClicked = @event is InputEventMouseButton { Pressed: true, ButtonIndex: (int) ButtonList.Left };
+        if (!mouseClicked)
         {
-            var result = inventory.FitItem(mousePos, item.Properties);
-            if (result.Result.CanCommit())
-            {
-                result.Commit(inventory, item);
-                EmitSignal(nameof(ItemPlaced), this);
-                GetTree().SetInputAsHandled();
-            }
+            return;
         }
+
+        if (!pickedUp)
+        {
+            pickUp();
+            return;
+        }
+
+        if (inventory is null)
+        {
+            return;
+        }
+
+        var result = inventory.FitItem(mousePos, item.Properties);
+        if (!result.Result.CanCommit())
+        {
+            return;
+        }
+
+        result.Commit(inventory, item);
+        EmitSignal(nameof(ItemPlaced), this);
+        GetTree().SetInputAsHandled();
+    }
+
+    private void pickUp()
+    {
+        pickedUp = true;
     }
 
     private void onItemPropertiesChanged()
@@ -81,7 +100,7 @@ public sealed class HoveringItem : Area2D
         }
     }
 
-    public void SetType(ItemLibrary.ItemType type)
+    public void SetItem(ItemLibrary.ItemType type)
     {
         GetNode<Item>("Item").Type = type;
     }

@@ -1,7 +1,15 @@
 using Godot;
 
-public class BottomHud : Control
+public sealed class BottomHud : Control
 {
+    public override void _Process(float delta)
+    {
+        var label = GetNode<RichTextLabel>("Label");
+        var frame = GetNode<NinePatchRect>("Frame");
+        // Something overwrites this so we're stubborn and just reset it every frame
+        frame.RectMinSize = new Vector2(0, label.RectSize.y + 3);
+    }
+
     public void ClearItem()
     {
         var label = GetNode<RichTextLabel>("Label");
