@@ -1,6 +1,5 @@
 using Godot;
 using System.Linq;
-using System.Threading.Tasks;
 
 public sealed class Main : Node
 {
@@ -11,33 +10,33 @@ public sealed class Main : Node
     private AnimationPlayer animations = null!;
     private ShakeCamera shakeCamera = null!;
 
-    public override async void _Ready()
+    public override void _Ready()
     {
         GD.Randomize();
         var dungeon = Dungeon.Make();
+        dungeonTraverser = new DungeonTraverser(dungeon);
 
-        var dialogue = GetNode<Dialogue>("Dialogue");
         animations = GetNode<AnimationPlayer>("AnimationPlayer");
         shakeCamera = GetNode<ShakeCamera>("ShakeCamera");
 
-        var sceneAnimationTasks = new[]
-        {
-            ToggleInventory(forceState: false, skipAnimation: true),
-            dialogue
-                .DisplayDialog(dungeon.Monologue.Select(x => new Sentence(Portrait.Player, x)).ToList())
-        };
+        ToggleInventory(forceState: false, skipAnimation: true);
 
         var inventory = GetNode<Inventory>("Inventory");
         inventory.Populate(dungeon.StartingItems);
 
-        await Task.WhenAll(sceneAnimationTasks);
-
-        dungeonTraverser = new DungeonTraverser(dungeon);
+        var dialogue = GetNode<Dialogue>("Dialogue");
+        dialogue
+            .DisplayDialog(dungeon.Monologue.Select(x => new Sentence(Portrait.Player, x)).ToList());
 
         var room = GetNode<Room>("Room");
         room.Player = GetNode<Player>("Player");
+    }
+
+    private void onDialogueFinished()
+    {
+        var room = GetNode<Room>("Room");
         room.FillRoom(dungeonTraverser.CurrentRoom);
-        await ToggleInventory(forceState: true);
+        ToggleInventory(forceState: true);
     }
 
     private void onRoomExited()
@@ -57,7 +56,7 @@ public sealed class Main : Node
     }
 
     private bool currentInventoryVisibility = true;
-    private async Task ToggleInventory(bool? forceState = null, bool skipAnimation = false)
+    private void ToggleInventory(bool? forceState = null, bool skipAnimation = false)
     {
         var inventory = GetNode<Inventory>("Inventory");
         var shouldBeVisible = forceState ?? inventory.Position.x < 0;
@@ -78,8 +77,5 @@ public sealed class Main : Node
         {
             animations.Advance(animations.CurrentAnimationLength);
         }
-
-        // TODO(will): Wait for player input
-        await Task.Delay(50);
     }
 }

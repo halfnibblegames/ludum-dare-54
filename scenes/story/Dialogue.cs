@@ -1,13 +1,13 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public sealed class Dialogue : Node2D
 {
+    [Signal] public delegate void DialogueFinished();
+
     private Label text = null!;
     private readonly Queue<Sentence> queuedDialogue = new();
-    private TaskCompletionSource<bool>? tsc;
 
     public override void _Ready()
     {
@@ -25,6 +25,11 @@ public sealed class Dialogue : Node2D
 
     public override void _Input(InputEvent @event)
     {
+        if (!Visible)
+        {
+            return;
+        }
+
         if (@event is not InputEventMouseButton { Pressed: true, ButtonIndex: (int) ButtonList.Left })
         {
             return;
@@ -42,15 +47,12 @@ public sealed class Dialogue : Node2D
             return;
         }
 
-        tsc?.SetResult(true);
-        tsc = null;
+        EmitSignal(nameof(DialogueFinished));
         Visible = false;
     }
 
-    public Task DisplayDialog(IReadOnlyList<Sentence> dialog)
+    public void DisplayDialog(IReadOnlyList<Sentence> dialog)
     {
-        tsc?.SetResult(true);
-        tsc = null;
         queuedDialogue.Clear();
 
         foreach (var sentence in dialog)
@@ -60,13 +62,11 @@ public sealed class Dialogue : Node2D
 
         if (queuedDialogue.Count == 0)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         startSentence(queuedDialogue.Dequeue());
         Visible = true;
-        tsc = new TaskCompletionSource<bool>();
-        return tsc.Task;
     }
 
     private void startSentence(Sentence sentence)
