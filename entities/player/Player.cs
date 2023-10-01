@@ -10,4 +10,14 @@ public sealed class Player : Character
     {
         EmitSignal(nameof(PlayerDied));
     }
+
+    public void ShowPunchButton()
+    {
+        GetNode<CanvasItem>("PunchButton").Visible = true;
+    }
+
+    public void HidePunchButton()
+    {
+        GetNode<CanvasItem>("PunchButton").Visible = false;
+    }
 }

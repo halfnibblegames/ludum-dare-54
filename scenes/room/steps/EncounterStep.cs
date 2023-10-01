@@ -19,6 +19,7 @@ public sealed class EncounterStep : IRoomStep
         var runner = new EncounterRunner(player, hazardObj, complete);
 
         cursor.Connect(nameof(ItemSelect.ItemChosen), runner, nameof(runner.OnItemChosen));
+        cursor.Connect(nameof(ItemSelect.PunchChosen), runner, nameof(runner.OnPunchChosen));
 
         roomNode.AddChild(runner);
         runner.AddChild(hazardObj);
@@ -52,7 +53,20 @@ public sealed class EncounterStep : IRoomStep
             }
 
             waitingForInteraction = false;
+            player.HidePunchButton();
             player.DoAction(() => useItem(item), finishPlayerTurn);
+        }
+
+        public void OnPunchChosen()
+        {
+            if (!waitingForInteraction)
+            {
+                return;
+            }
+
+            waitingForInteraction = false;
+            player.HidePunchButton();
+            player.DoAction(punch, finishPlayerTurn);
         }
 
         private void useItem(Item item)
@@ -61,8 +75,14 @@ public sealed class EncounterStep : IRoomStep
             item.Use();
         }
 
+        private void punch()
+        {
+            encounter.DamageHazard(1);
+        }
+
         private void startPlayerTurn()
         {
+            player.ShowPunchButton();
             waitingForInteraction = true;
         }
 

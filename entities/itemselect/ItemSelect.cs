@@ -5,10 +5,14 @@ public sealed class ItemSelect : Node
     [Signal]
     public delegate void ItemChosen(Item item);
 
+    [Signal]
+    public delegate void PunchChosen();
+
     private Node2D cursor = null!;
     private BottomHud hud = null!;
     private Vector2 mousePos = Vector2.Zero;
     private Inventory? inventory;
+    private bool punch;
 
     public override void _Ready()
     {
@@ -42,11 +46,20 @@ public sealed class ItemSelect : Node
             mousePos = motionEvent.Position;
         }
 
-        if (inventory is not null &&
-            @event is InputEventMouseButton { Pressed: true, ButtonIndex: (int) ButtonList.Left } mouseEvent &&
-            inventory.TryFindItem(mouseEvent.Position, out var item))
+        if (@event is not InputEventMouseButton { Pressed: true, ButtonIndex: (int) ButtonList.Left } mouseEvent)
+        {
+            return;
+        }
+
+        if (inventory is not null && inventory.TryFindItem(mouseEvent.Position, out var item))
         {
             EmitSignal(nameof(ItemChosen), item);
+            GetTree().SetInputAsHandled();
+        }
+
+        if (punch)
+        {
+            EmitSignal(nameof(PunchChosen));
             GetTree().SetInputAsHandled();
         }
     }
@@ -57,6 +70,12 @@ public sealed class ItemSelect : Node
         {
             inventory = inv;
         }
+
+        if (other is PunchButton)
+        {
+            punch = true;
+            GD.Print("p1");
+        }
     }
 
     private void onAreaExited(Area2D other)
@@ -65,6 +84,12 @@ public sealed class ItemSelect : Node
         {
             inventory = null;
             hud.ClearItem();
+        }
+
+        if (other is PunchButton)
+        {
+            punch = false;
+            GD.Print("p2");
         }
     }
 }
