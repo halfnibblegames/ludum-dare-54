@@ -64,6 +64,7 @@ anims/RESET = SubResource( 2 )
 [node name="ShakeCamera" type="Camera2D" parent="."]
 position = Vector2( 96, 54 )
 current = true
+editor_draw_screen = false
 script = ExtResource( 7 )
 
 [connection signal="RoomExited" from="Room" to="." method="onRoomExited"]
