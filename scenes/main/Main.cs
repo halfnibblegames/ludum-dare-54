@@ -22,7 +22,7 @@ public sealed class Main : Node
 
         var sceneAnimationTasks = new[]
         {
-            ToggleInventory(forceState: false),
+            ToggleInventory(forceState: false, skipAnimation: true),
             dialogue
                 .DisplayDialog(dungeon.Monologue.Select(x => new Sentence(Portrait.Player, x)).ToList())
         };
@@ -57,7 +57,7 @@ public sealed class Main : Node
     }
 
     private bool currentInventoryVisibility = true;
-    private async Task ToggleInventory(bool? forceState = null)
+    private async Task ToggleInventory(bool? forceState = null, bool skipAnimation = false)
     {
         var inventory = GetNode<Inventory>("Inventory");
         var shouldBeVisible = forceState ?? inventory.Position.x < 0;
@@ -72,6 +72,11 @@ public sealed class Main : Node
         else
         {
             animations.Play("InventoryClose");
+        }
+
+        if (skipAnimation)
+        {
+            animations.Advance(animations.CurrentAnimationLength);
         }
 
         // TODO(will): Wait for player input
