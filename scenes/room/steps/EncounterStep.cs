@@ -56,7 +56,7 @@ public sealed class EncounterStep : IRoomStep
         private void useItem(Item item)
         {
             item.Type.CombatUse()!.Do(encounter);
-            //item.Use();
+            item.Use();
         }
 
         private void startPlayerTurn()

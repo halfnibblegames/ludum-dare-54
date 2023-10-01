@@ -90,4 +90,11 @@ public static class ItemTypeExtensions
         Bomb => Compose(DamageHazard(8), DamagePlayer(3)), // TODO(tom): consider randomized damage
         _ => null
     };
+
+    public static int Durability(this ItemType itemType) => itemType switch
+    {
+        Sword => 2,
+        FlameSword => 4,
+        _ => 1
+    };
 }

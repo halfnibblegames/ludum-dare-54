@@ -22,3 +22,11 @@ __meta__ = {
 "source": "res://entities/item/sprites/sword.aseprite"
 }
 }
+
+[node name="DurabilityRect" type="ColorRect" parent="."]
+visible = false
+margin_left = -8.0
+margin_top = 7.0
+margin_right = 8.0
+margin_bottom = 8.0
+color = Color( 0.403922, 0.968627, 0.384314, 1 )
