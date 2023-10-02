@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 public sealed class Main : Node
@@ -10,6 +11,7 @@ public sealed class Main : Node
     private ShakeCamera shakeCamera = null!;
 
     private bool gameOver;
+    private int score;
 
     public override void _Ready()
     {
@@ -47,9 +49,8 @@ public sealed class Main : Node
             GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
             return;
         }
-
-        gameOver = true;
-        GetNode<CanvasItem>("GameOverOverlay").Visible = true;
+        addLootScore();
+        doGameOver();
     }
 
     private void onPlayerHealthChanged(int newHealth, int maxHealth, int healthChange)
@@ -64,10 +65,28 @@ public sealed class Main : Node
 
     private void onPlayerDied()
     {
-        gameOver = true;
+        doGameOver();
         var room = GetNode<Room>("Room");
         room.Clear();
-        GetNode<CanvasItem>("GameOverOverlay").Visible = true;
+    }
+
+    private void addLootScore()
+    {
+        score += GetNode<Inventory>("Inventory").HeldItems.Sum(i => i.Type.Score());
+    }
+
+    private void doGameOver()
+    {
+        gameOver = true;
+        var overlay = GetNode<CanvasItem>("GameOverOverlay");
+        overlay.GetNode<Label>("GameOver/Score").Text = score.ToString();
+        overlay.Visible = true;
+    }
+
+    private void onScoreAdded(int amount)
+    {
+        score += amount;
+        GetNode<TopHud>("TopHud").UpdateScore(score);
     }
 
     private bool currentInventoryVisibility = true;

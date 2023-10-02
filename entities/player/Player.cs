@@ -5,6 +5,9 @@ public sealed class Player : Character
 {
     [Signal] public delegate void PlayerDied();
 
+    [Signal]
+    public delegate void ScoreAdded(int amount);
+
     protected override Vector2 Forward => Vector2.Down;
 
     protected override void OnDeath()
@@ -46,5 +49,10 @@ public sealed class Player : Character
             sprite.Frame = 0;
             complete();
         }
+    }
+
+    public void AddScore(int amount)
+    {
+        EmitSignal(nameof(ScoreAdded), amount);
     }
 }

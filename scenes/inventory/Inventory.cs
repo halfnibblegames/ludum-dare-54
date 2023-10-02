@@ -35,7 +35,9 @@ public sealed class Inventory : Area2D
     }
 
     private Item?[] itemGrid = Array.Empty<Item?>();
-    private List<Item> heldItems = new();
+    private readonly List<Item> heldItems = new();
+
+    public IReadOnlyList<Item> HeldItems => heldItems.AsReadOnly();
 
     public Item? this[Coord coord]
     {

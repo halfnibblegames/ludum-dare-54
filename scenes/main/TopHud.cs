@@ -5,6 +5,11 @@ public sealed class TopHud : Control
 {
     private const int maxWidth = 58;
 
+    public override void _Ready()
+    {
+        UpdateScore(0);
+    }
+
     public void UpdateHealth(int newHealth, int maxHealth)
     {
         var healthFill = GetNode<NinePatchRect>("HealthFill");

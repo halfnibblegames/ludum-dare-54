@@ -96,6 +96,7 @@ public sealed class EncounterStep : IRoomStep
                 return;
             }
 
+            player.AddScore(hazard.Type.Score());
             QueueFree();
             complete();
         }

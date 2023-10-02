@@ -77,3 +77,4 @@ z_index = 100
 [connection signal="RoomExited" from="Room" to="." method="onRoomExited"]
 [connection signal="HealthChanged" from="Player" to="." method="onPlayerHealthChanged"]
 [connection signal="PlayerDied" from="Player" to="." method="onPlayerDied"]
+[connection signal="ScoreAdded" from="Player" to="." method="onScoreAdded"]

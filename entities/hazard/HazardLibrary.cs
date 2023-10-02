@@ -40,6 +40,15 @@ public static class HazardTypeExtensions
         _ => throw new ArgumentOutOfRangeException(nameof(hazardType), hazardType, null)
     };
 
+    public static int Score(this HazardType hazardType) => hazardType switch
+    {
+        Spider => 8,
+        Slime => 5,
+        Beholder => 12,
+        OvergrownVines => 1,
+        _ => throw new ArgumentOutOfRangeException(nameof(hazardType), hazardType, null)
+    };
+
     public static int IndexOfTexture(this HazardType hazardType) => hazardType switch
     {
         Spider => 0,
