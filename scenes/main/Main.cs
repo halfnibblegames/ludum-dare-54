@@ -42,8 +42,14 @@ public sealed class Main : Node
     private void onRoomExited()
     {
         if (gameOver) return;
-        dungeonTraverser.MoveForward();
-        GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
+        if (dungeonTraverser.MoveForward())
+        {
+            GetNode<Room>("Room").FillRoom(dungeonTraverser.CurrentRoom);
+            return;
+        }
+
+        gameOver = true;
+        GetNode<CanvasItem>("GameOverOverlay").Visible = true;
     }
 
     private void onPlayerHealthChanged(int newHealth, int maxHealth, int healthChange)

@@ -9,8 +9,15 @@
         currentRoom = dungeon.EntranceRoom;
     }
 
-    public void MoveForward()
+    public bool MoveForward()
     {
-        currentRoom = currentRoom.North ?? currentRoom.East ?? currentRoom.South ?? currentRoom.West ?? currentRoom;
+        var next = currentRoom.East;
+        if (next == null)
+        {
+            return false;
+        }
+
+        currentRoom = next;
+        return true;
     }
 }
