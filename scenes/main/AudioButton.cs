@@ -15,6 +15,9 @@ public sealed class AudioButton : TextureRect
         {
             if (muted == value) return;
             muted = value;
+
+            Character.ShouldPlaySound = !muted;
+            
             if (muted)
             {
                 audio?.Stop();

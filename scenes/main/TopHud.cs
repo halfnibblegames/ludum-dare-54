@@ -5,13 +5,6 @@ public sealed class TopHud : Control
 {
     private const int maxWidth = 58;
 
-    public override void _Ready()
-    {
-
-        var audioButton = GetNode<TextureRect>("AudioButton");
-        // TODO: Handle clicks here????
-    }
-
     public void UpdateHealth(int newHealth, int maxHealth)
     {
         var healthFill = GetNode<NinePatchRect>("HealthFill");

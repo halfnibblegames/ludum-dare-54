@@ -16,6 +16,8 @@ public abstract class Character : Node2D
 
     [Export] public int CurrentHealth { get; protected set; }
     [Export] protected int MaxHealth { get; set; } = 12;
+    
+    public static bool ShouldPlaySound = true;
 
     private CurrentAction? currentAction;
     private Node2D? offset;
@@ -80,6 +82,7 @@ public abstract class Character : Node2D
         var oldHealth = CurrentHealth;
         CurrentHealth = Math.Max(CurrentHealth - amountOfDamage, 0);
         redness = 1;
+        
         playHitSound();
         EmitSignal(nameof(HealthChanged), CurrentHealth, MaxHealth, CurrentHealth - oldHealth);
         if (CurrentHealth <= 0)
@@ -90,6 +93,9 @@ public abstract class Character : Node2D
 
     private void playHitSound()
     {
+        if (!ShouldPlaySound)
+            return;
+
         if (GetNode<AudioStreamPlayer>("HitSound") is not { } sound)
         {
             return;
