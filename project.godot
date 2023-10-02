@@ -10,9 +10,10 @@ config_version=4
 
 [application]
 
-config/name="Ludum Dare 54"
+config/name="Legend of L0nk: Tears of Encumbrance"
 run/main_scene="res://scenes/main/TitleScreen.tscn"
-config/icon="res://icon.png"
+config/icon="res://assets/images/icon.png"
+config/windows_native_icon="res://assets/images/icon.ico"
 
 [autoload]
 
