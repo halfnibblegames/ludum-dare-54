@@ -28,8 +28,14 @@ public sealed class BottomHud : Control
         var name = item.ToString();
         var desc = item.Description();
         var useDesc = item.CombatUse() is { } use ? $"\n{use.Description}" : "";
+        var scoreDesc = item.Score() switch
+        {
+            1 => "\n1 point",
+            0 => "",
+            _ => $"\n{item.Score()} points",
+        };
 
-        label.BbcodeText = $"{name}\n[color=silver]{desc}[/color][color=teal]{useDesc}[/color]";
+        label.BbcodeText = $"{name}\n[color=silver]{desc}[/color][color=teal]{useDesc}[/color][color=yellow]{scoreDesc}[/color]";
         frame.RectMinSize = new Vector2(0, label.RectSize.y + 3);
         Visible = true;
     }
