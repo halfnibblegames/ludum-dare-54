@@ -12,9 +12,9 @@ public static class ItemLibrary
         Sword,
         Potion,
         Key,
-        FlameSword,
+        Excalibur,
         Crown,
-        PonderingOrb,
+        Orb,
         Crystal,
         Rope,
         Bomb
@@ -31,9 +31,9 @@ public static class ItemLibrary
         Sword => new Properties(1, 2, 0, 0),
         Potion => new Properties(1, 1, 1, 0),
         Key => new Properties(1, 1, 1, 1),
-        FlameSword => new Properties(1, 2, 2, 0),
+        Excalibur => new Properties(1, 2, 0, 0),
         Crown => new Properties(2, 1, 0, 2),
-        PonderingOrb => new Properties(2, 2, 3, 0),
+        Orb => new Properties(2, 2, 3, 0),
         Crystal => new Properties(1, 2, 2, 2),
         Bomb => new Properties(1, 1, 3, 2),
         Rope => new Properties(1, 2, 0, 3),
@@ -59,10 +59,10 @@ public static class ItemTypeExtensions
     {
         Key => "Opens doors",
         Sword => "Basic Weapon",
-        FlameSword => "Oldest brother of the Lukewarm Shank.",
+        Excalibur => "Look, we really had no time to draw a different sword.",
         Crown => "Worn by a king with a comically large head.",
         Potion => "Is it really day drinking if you can't see the sun?",
-        PonderingOrb => "An Orb. Feels Magical. Seems adequate for pondering.",
+        Orb => "An Orb. Feels Magical. Seems adequate for pondering.",
         Crystal => "A fine mineral.",
         Rope => "You never need a rope when you go on an adventure. Except when you do.",
         Bomb => "Not useless, just extremely situational.",
@@ -73,28 +73,28 @@ public static class ItemTypeExtensions
     public static int Score(this ItemType itemType) => itemType switch
     {
         Sword => 1,
-        Potion => -1,
+        Potion => 0,
         Key => -10,
-        FlameSword => 10,
-        Crown => 100,
-        Crystal => 10,
-        PonderingOrb => 999,
+        Excalibur => 99,
+        Crown => 99,
+        Orb => 999,
         _ => 0
     };
 
     public static ICombatUse? CombatUse(this ItemType itemType) => itemType switch
     {
         Sword => DamageHazard(4),
-        FlameSword => DamageHazard(6),
-        Potion => HealPlayer(8),
+        Excalibur => DamageHazard(99),
+        Potion => HealPlayer(10),
         Bomb => Compose(DamageHazard(8), DamagePlayer(3)), // TODO(tom): consider randomized damage
         _ => null
     };
 
     public static int Durability(this ItemType itemType) => itemType switch
     {
-        Sword => 2,
-        FlameSword => 4,
+        Sword => 7,
+        Excalibur => 3,
+        Potion => 3,
         _ => 1
     };
 }

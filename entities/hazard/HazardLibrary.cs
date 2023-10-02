@@ -26,7 +26,7 @@ public static class HazardTypeExtensions
     {
         Spider => 6,
         Slime => 8,
-        Beholder => 12,
+        Beholder => 13,
         OvergrownVines => 4,
         _ => throw new ArgumentOutOfRangeException(nameof(hazardType), hazardType, null)
     };

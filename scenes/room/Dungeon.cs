@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using static HazardLibrary.HazardType;
@@ -64,9 +65,42 @@ public static class DungeonRoomParser
                     "Unlike gunpowder, personal computers did not exist in the era this game takes place in."
                 ),
                 Hazard(OvergrownVines),
-                Item(Rope)),
+                Dialogue(
+                    Portrait.Player, 
+                    "With limited space, I feel like there should be a way to not pick up these items."
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "There is one! Drag the items to the trash can below the mute button.",
+                    "Just don't mute the music. The devs are particularly proud of it"
+                ),
+                Item(Rope),
+                Dialogue(
+                    Portrait.Player, 
+                    "That rope was still in greyscale."
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "The devs were running out of time towards the end."
+                )
+            ),
             Room(
-                Item(Sword)),
+                Item(Sword),
+                Dialogue(
+                    Portrait.Player, 
+                    "Why do I need another sword?"
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "Swords break, so you can take that into consideration when fighting.",
+                        "That's part of inventory management. You know, the theme of the jam."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "I don't know what preserves have to do with anything.",
+                    "But thanks anyway, disembodied voice I insist on interacting with."
+                )
+            ),
             Room(
                 Dialogue(
                     Portrait.Slime, 
@@ -84,8 +118,155 @@ public static class DungeonRoomParser
                 Item(Sword)
             ),
             Room(
+                Dialogue(
+                    Portrait.Beholder, 
+                    "Now you will fight a larger monster, in order to prove your worth."
+                ),
                 Hazard(Beholder),
-                Item(PonderingOrb)
+                Dialogue(
+                    Portrait.Player, 
+                    "Hmm, even though that Sword has the exact same sprite, it does look somehow special."
+                ),
+                Item(Excalibur)
+            ),
+            Room(Item(Potion)),
+            Room(Item(Potion)),
+            Room(Item(Potion)),
+            Room(Item(Sword)),
+            Room(Item(Sword)),
+            Room(
+                Hazard(Beholder),
+                Item(Crown)
+            ),
+            Room(Item(Potion)),
+            Room(Item(Potion)),
+            Room(
+                Hazard(Slime),
+                Item(Potion)
+            ),
+            Room(
+                Hazard(Beholder),
+                Item(Sword)
+            ),
+            PotionRoom(),
+            PotionRoom(),
+            Room(
+                Hazard(Slime)
+            ),
+            Room(
+                Hazard(Slime)
+            ),
+            Room(
+                Hazard(Slime)
+            ),
+            SwordRoom(),
+            SwordRoom(),
+            Room(
+                Dialogue(
+                    Portrait.Beholder, 
+                    "I'm the final boss. You can tell that because I'm substantially larger."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "...",
+                    "You look the same."
+                ),
+                Hazard(Beholder),
+                Item(Orb)
+            ),
+            Room(
+                Dialogue(
+                    Portrait.Player, 
+                    "Wait, I thought it was over."
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "Not yet. The grind continues. Go get that bread."
+                ),
+                Hazard(Beholder),
+                Item(Orb)
+            ),
+            Room(
+            Hazard(Slime),
+                Item(Potion)
+            ),
+            Room(
+                Hazard(Slime)
+            ),
+            Room(
+                Hazard(Slime)
+            ),
+            Room(
+                Hazard(Slime)
+            ),
+            Room(
+                Hazard(Beholder),
+                Item(Orb)
+            ),
+            Room(
+                Dialogue(
+                    Portrait.Narrator, 
+                    "And at last, our hero finds the Beholder who killed his parents."
+                ),
+                Dialogue(
+                    Portrait.Beholder, 
+                    "Ha, I'm the Beholder who killed your parents."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "At last I found you, beholder who killed my parents."
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "He will now have his revenge."
+                ),
+                Dialogue(
+                    Portrait.Beholder, 
+                    "Ha, You will never have your revenge."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "I will have my revenge!"
+                ),
+                Hazard(Beholder),
+                Item(Orb),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "And at last, our hero killed the Beholder who killed his parents."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "Is that the reason I entered this dungeon?"
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "Originally the devs intended this to be a journey where you saved your mother from cancer.",
+                    "They scraped that idea and settled for something with more meta-humour and self awareness.",
+                    "You know, time constraints and all that."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "I see. Can we be sure that was the Beholder who killed my parents tho?"
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "..."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "...",
+                    "Well, I guess at least I made one friend in you, narrator"
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "Perhaps true friendship is the disembodied apparitions found along the way"
+                ),
+                Dialogue(
+                    Portrait.Slime, 
+                    "The narrator and L0nk lived happily ever after in a relationship that transcends the fourth wall.",
+                    "After the tragic death of my father and grandfather, I now need to do freelancing as a narrator",
+                    "It's a tough job, but I need to pay for my college tuition somehow"
+                )
             )
         };
 
