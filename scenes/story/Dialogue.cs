@@ -72,6 +72,7 @@ public sealed class Dialogue : Node2D
     private void startSentence(Sentence sentence)
     {
         // TODO(will): Change portrait if we ever get this far
+        // WE NEVER GOT THIS FAR
         text.PercentVisible = 0;
         text.Text = sentence.Text;
     }

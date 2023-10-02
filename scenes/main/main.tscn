@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scenes/inventory/inventory.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/story/Dialogue.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://entities/player/player.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/main/ShakeCamera.cs" type="Script" id=7]
 [ext_resource path="res://scenes/main/GameOver.tscn" type="PackedScene" id=8]
+[ext_resource path="res://assets/images/discard.png" type="Texture" id=9]
 
 [sub_resource type="Animation" id=1]
 resource_name = "InventoryClose"
@@ -77,6 +78,13 @@ visible = false
 z_index = 100
 
 [node name="GameOver" parent="GameOverOverlay" instance=ExtResource( 8 )]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_left = 171.0
+margin_top = 84.0
+margin_right = 187.0
+margin_bottom = 100.0
+texture = ExtResource( 9 )
 
 [connection signal="RoomExited" from="Room" to="." method="onRoomExited"]
 [connection signal="HealthChanged" from="Player" to="." method="onPlayerHealthChanged"]
