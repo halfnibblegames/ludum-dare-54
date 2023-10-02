@@ -56,7 +56,7 @@ public static class DungeonRoomParser
                 ),
                 Dialogue(
                     Portrait.Player, 
-                    "Right? I'm sure he's reading that he should click on the items he wants me to use.",
+                    "Right? I'm sure they are reading that they should click on the items they wants me to use.",
                     "Whatever the word 'click' means in this context."
                 ),
                 Dialogue(
