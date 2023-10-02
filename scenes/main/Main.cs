@@ -27,6 +27,7 @@ public sealed class Main : Node
         room.Player = GetNode<Player>("Player");
 
         room.FillRoom(dungeonTraverser.CurrentRoom);
+        ToggleInventory(forceState: room.WantsInventory, skipAnimation: true);
     }
 
     public override void _Process(float delta)

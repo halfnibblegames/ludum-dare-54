@@ -19,7 +19,7 @@ public sealed class Room : Node2D
     // find a better way of injecting this?
     public Player Player { get; set; } = null!;
 
-    public bool WantsInventory { get; private set; } = true;
+    public bool WantsInventory { get; private set; }
 
     public override void _Ready()
     {
@@ -91,6 +91,7 @@ public sealed class Room : Node2D
     private void exitRoom()
     {
         state = State.Exiting;
+        WantsInventory = false;
     }
 
     private void finishRoom()
