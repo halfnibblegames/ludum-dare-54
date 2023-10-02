@@ -43,6 +43,7 @@ public sealed class Main : Node
 
     private void onRoomExited()
     {
+        GetNode<TopHud>("TopHud").DiscardDamagePreview();
         if (gameOver) return;
         if (dungeonTraverser.MoveForward())
         {
@@ -61,6 +62,11 @@ public sealed class Main : Node
             var shakeIntensity = baseShakeIntensity - healthChange * shakeIntensityPerHealthLost;
             shakeCamera.Shake(shakeIntensity);
         }
+    }
+
+    private void onDamagePrepared(int damage)
+    {
+        GetNode<TopHud>("TopHud").PreviewDamage(damage);
     }
 
     private void onPlayerDied()

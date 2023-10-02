@@ -8,6 +8,9 @@ public sealed class Player : Character
     [Signal]
     public delegate void ScoreAdded(int amount);
 
+    [Signal]
+    public delegate void DamagePrepared(int amount);
+
     protected override Vector2 Forward => Vector2.Down;
 
     protected override void OnDeath()
@@ -54,5 +57,10 @@ public sealed class Player : Character
     public void AddScore(int amount)
     {
         EmitSignal(nameof(ScoreAdded), amount);
+    }
+
+    public void PreviewDamage(int amount)
+    {
+        EmitSignal(nameof(DamagePrepared), amount);
     }
 }

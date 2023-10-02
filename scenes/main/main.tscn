@@ -72,6 +72,7 @@ script = ExtResource( 7 )
 visible = false
 
 [connection signal="RoomExited" from="Room" to="." method="onRoomExited"]
+[connection signal="DamagePrepared" from="Player" to="." method="onDamagePrepared"]
 [connection signal="HealthChanged" from="Player" to="." method="onPlayerHealthChanged"]
 [connection signal="PlayerDied" from="Player" to="." method="onPlayerDied"]
 [connection signal="ScoreAdded" from="Player" to="." method="onScoreAdded"]

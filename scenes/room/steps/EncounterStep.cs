@@ -88,6 +88,7 @@ public sealed class EncounterStep : IRoomStep
 
         private void startPlayerTurn()
         {
+            player.PreviewDamage(hazard.Type.AttackDamage());
             player.ShowPunchButton();
             waitingForInteraction = true;
             cursor.Enable();
@@ -102,6 +103,7 @@ public sealed class EncounterStep : IRoomStep
             }
 
             player.AddScore(hazard.Type.Score());
+            player.PreviewDamage(0);
             QueueFree();
             complete();
         }
