@@ -99,6 +99,7 @@ jobs:
           path: build/web
           retention-days: 1
       - name: Deploy 🚀
+        if: ${{ false }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build/web
