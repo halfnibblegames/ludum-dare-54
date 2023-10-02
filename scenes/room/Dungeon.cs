@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using static HazardLibrary.HazardType;
@@ -57,7 +56,7 @@ public static class DungeonRoomParser
                 ),
                 Dialogue(
                     Portrait.Player, 
-                    "Right? I'm sure they are reading that they should click on the items they wants me to use.",
+                    "Right? I'm sure they are reading that they should click on the items they want me to use.",
                     "Whatever the word 'click' means in this context."
                 ),
                 Dialogue(
@@ -129,38 +128,40 @@ public static class DungeonRoomParser
                 ),
                 Item(Excalibur)
             ),
-            Room(Item(Potion)),
-            Room(Item(Potion)),
-            Room(Item(Potion)),
-            Room(Item(Sword)),
-            Room(Item(Sword)),
+            Room(
+                Item(Potion),
+                Item(Potion),
+                Item(Potion),
+                Item(Sword),
+                Item(Sword)
+            ),
             Room(
                 Hazard(Beholder),
-                Item(Crown)
+                Item(Crown),
+                Item(Potion),
+                Item(Potion)
             ),
-            Room(Item(Potion)),
-            Room(Item(Potion)),
             Room(
                 Hazard(Slime),
                 Item(Potion)
             ),
             Room(
                 Hazard(Beholder),
+                Item(Sword),
+                Item(Potion),
+                Item(Potion)
+            ),
+            Room(
+                Hazard(Slime)
+            ),
+            Room(
+                Hazard(Slime)
+            ),
+            Room(
+                Hazard(Slime),
+                Item(Sword),
                 Item(Sword)
             ),
-            PotionRoom(),
-            PotionRoom(),
-            Room(
-                Hazard(Slime)
-            ),
-            Room(
-                Hazard(Slime)
-            ),
-            Room(
-                Hazard(Slime)
-            ),
-            SwordRoom(),
-            SwordRoom(),
             Room(
                 Dialogue(
                     Portrait.Beholder, 
