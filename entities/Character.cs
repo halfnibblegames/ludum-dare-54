@@ -62,7 +62,7 @@ public abstract class Character : Node2D
         }
     }
 
-    public void DoAction(Action @do, Action complete)
+    public virtual void DoAction(Action @do, Action complete)
     {
         if (currentAction is not null)
         {
@@ -82,7 +82,7 @@ public abstract class Character : Node2D
         var oldHealth = CurrentHealth;
         CurrentHealth = Math.Max(CurrentHealth - amountOfDamage, 0);
         redness = 1;
-        
+
         playHitSound();
         EmitSignal(nameof(HealthChanged), CurrentHealth, MaxHealth, CurrentHealth - oldHealth);
         if (CurrentHealth <= 0)
