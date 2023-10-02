@@ -71,12 +71,14 @@ public sealed class Room : Node2D
 
     private void enterRoom()
     {
+        Player.StartWalking();
         Player.Position = new Vector2(96, initialY);
         state = State.Entering;
     }
 
     private void doNextStep()
     {
+        Player.StopWalking();
         if (queuedSteps.Count == 0)
         {
             exitRoom();
@@ -90,6 +92,7 @@ public sealed class Room : Node2D
 
     private void exitRoom()
     {
+        Player.StartWalking();
         state = State.Exiting;
         WantsInventory = false;
     }

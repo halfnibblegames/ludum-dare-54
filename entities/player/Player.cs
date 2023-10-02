@@ -20,4 +20,15 @@ public sealed class Player : Character
     {
         GetNode<CanvasItem>("PunchButton").Visible = false;
     }
+
+    public void StartWalking()
+    {
+        GetNode<AnimationPlayer>("Offset/Sprite/AnimationPlayer").Play("default");
+        
+    }
+    
+    public void StopWalking()
+    {
+        GetNode<AnimationPlayer>("Offset/Sprite/AnimationPlayer").Stop();        
+    }
 }
