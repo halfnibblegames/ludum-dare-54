@@ -13,6 +13,7 @@ public sealed class ItemSelect : Node
     private Vector2 mousePos = Vector2.Zero;
     private Inventory? inventory;
     private bool punch;
+    private bool enabled;
 
     public override void _Ready()
     {
@@ -20,14 +21,28 @@ public sealed class ItemSelect : Node
         hud = GetNode<BottomHud>("BottomHud");
         mousePos = cursor.GetGlobalMousePosition();
         cursor.Position = mousePos;
+        Enable();
+    }
 
+    public void Enable()
+    {
         GetNode<InputMouseHint>("InventoryMouseHint").Prime();
+        enabled = true;
+    }
+
+    public void Disable()
+    {
+        GetNode<InputMouseHint>("InventoryMouseHint").Reset();
+        enabled = false;
+        hud.ClearItem();
     }
 
     public override void _Process(float delta)
     {
         base._Process(delta);
         cursor.Position = mousePos;
+
+        if (!enabled) return;
 
         if (inventory?.TryFindItem(mousePos, out var item) ?? false)
         {

@@ -18,7 +18,7 @@ public sealed class EncounterStep : IRoomStep
         var hazardObj = templates.HazardScene.Instance<Hazard>();
         hazardObj.Type = hazard;
         hazardObj.Position = new Vector2(96, 72);
-        var runner = new EncounterRunner(player, hazardObj, complete);
+        var runner = new EncounterRunner(player, hazardObj, cursor, complete);
 
         cursor.Connect(nameof(ItemSelect.ItemChosen), runner, nameof(runner.OnItemChosen));
         cursor.Connect(nameof(ItemSelect.PunchChosen), runner, nameof(runner.OnPunchChosen));
@@ -34,14 +34,16 @@ public sealed class EncounterStep : IRoomStep
     {
         private readonly Player player;
         private readonly Hazard hazard;
+        private readonly ItemSelect cursor;
         private readonly Action complete;
         private readonly Encounter encounter;
         private bool waitingForInteraction;
 
-        public EncounterRunner(Player player, Hazard hazard, Action complete)
+        public EncounterRunner(Player player, Hazard hazard, ItemSelect cursor, Action complete)
         {
             this.player = player;
             this.hazard = hazard;
+            this.cursor = cursor;
             this.complete = complete;
             encounter = new Encounter(player, hazard);
             startPlayerTurn();
@@ -55,6 +57,7 @@ public sealed class EncounterStep : IRoomStep
             }
 
             waitingForInteraction = false;
+            cursor.Disable();
             player.HidePunchButton();
             player.DoAction(() => useItem(item), finishPlayerTurn);
         }
@@ -67,6 +70,7 @@ public sealed class EncounterStep : IRoomStep
             }
 
             waitingForInteraction = false;
+            cursor.Disable();
             player.HidePunchButton();
             player.DoAction(punch, finishPlayerTurn);
         }
@@ -86,6 +90,7 @@ public sealed class EncounterStep : IRoomStep
         {
             player.ShowPunchButton();
             waitingForInteraction = true;
+            cursor.Enable();
         }
 
         private void finishPlayerTurn()
