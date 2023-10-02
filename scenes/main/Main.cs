@@ -78,7 +78,9 @@ public sealed class Main : Node
 
     private void addLootScore()
     {
-        score += GetNode<Inventory>("Inventory").HeldItems.Sum(i => i.Type.Score());
+        var inventory = GetNode<Inventory>("Inventory");
+        score += inventory.HeldItems.Sum(i => i.Type.Score());
+        score += inventory.EmptySlotCount * 10;
     }
 
     private void doGameOver()

@@ -38,6 +38,7 @@ public sealed class Inventory : Area2D
     private readonly List<Item> heldItems = new();
 
     public IReadOnlyList<Item> HeldItems => heldItems.AsReadOnly();
+    public int EmptySlotCount => itemGrid.Count(i => i is null);
 
     public Item? this[Coord coord]
     {
