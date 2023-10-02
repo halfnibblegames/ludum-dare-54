@@ -10,6 +10,7 @@ public sealed class HoveringItem : Area2D
     private Vector2? snapPos;
     private Inventory? inventory;
     private bool pickedUp;
+    private bool discard;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -52,6 +53,13 @@ public sealed class HoveringItem : Area2D
             return;
         }
 
+        if (discard)
+        {
+            EmitSignal(nameof(ItemPlaced), this);
+            GetTree().SetInputAsHandled();
+            return;
+        }
+
         if (inventory is null)
         {
             return;
@@ -89,6 +97,11 @@ public sealed class HoveringItem : Area2D
         {
             inventory = inv;
         }
+
+        if (other is ItemDiscard)
+        {
+            discard = true;
+        }
     }
 
     private void onAreaExited(Area2D other)
@@ -97,6 +110,11 @@ public sealed class HoveringItem : Area2D
         {
             inventory = null;
             snapPos = null;
+        }
+
+        if (other is ItemDiscard)
+        {
+            discard = false;
         }
     }
 
