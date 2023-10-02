@@ -78,8 +78,8 @@ public sealed class Main : Node
     private void doGameOver()
     {
         gameOver = true;
-        var overlay = GetNode<CanvasItem>("GameOverOverlay");
-        overlay.GetNode<Label>("GameOver/Score").Text = score.ToString();
+        var overlay = GetNode<CanvasItem>("GameOver");
+        overlay.GetNode<Label>("Score").Text = score.ToString();
         overlay.Visible = true;
     }
 

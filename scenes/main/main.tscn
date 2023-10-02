@@ -68,11 +68,8 @@ current = true
 editor_draw_screen = false
 script = ExtResource( 7 )
 
-[node name="GameOverOverlay" type="Node2D" parent="."]
+[node name="GameOver" parent="." instance=ExtResource( 8 )]
 visible = false
-z_index = 100
-
-[node name="GameOver" parent="GameOverOverlay" instance=ExtResource( 8 )]
 
 [connection signal="RoomExited" from="Room" to="." method="onRoomExited"]
 [connection signal="HealthChanged" from="Player" to="." method="onPlayerHealthChanged"]

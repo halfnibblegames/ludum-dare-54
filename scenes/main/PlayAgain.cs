@@ -1,6 +1,6 @@
 using Godot;
 
-public class StartButton : Label
+public class PlayAgain : Label
 {
     public override void _GuiInput(InputEvent @event)
     {
@@ -9,6 +9,6 @@ public class StartButton : Label
             return;
 
         GetTree().SetInputAsHandled();
-        GetTree().ChangeScene("res://scenes/main/main.tscn");
+        GetTree().ChangeScene("res://scenes/main/TitleScreen.tscn");
     }
 }
