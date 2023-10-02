@@ -9,6 +9,7 @@ public static class HazardLibrary
     {
         Spider,
         Slime,
+        Beholder,
         OvergrownVines
     }
 
@@ -25,6 +26,7 @@ public static class HazardTypeExtensions
     {
         Spider => 6,
         Slime => 8,
+        Beholder => 12,
         OvergrownVines => 4,
         _ => throw new ArgumentOutOfRangeException(nameof(hazardType), hazardType, null)
     };
@@ -33,6 +35,16 @@ public static class HazardTypeExtensions
     {
         Spider => 3,
         Slime => 2,
+        Beholder => 3,
+        OvergrownVines => 0,
+        _ => throw new ArgumentOutOfRangeException(nameof(hazardType), hazardType, null)
+    };
+
+    public static int IndexOfTexture(this HazardType hazardType) => hazardType switch
+    {
+        Spider => 0,
+        Slime => 0,
+        Beholder => 1,
         OvergrownVines => 0,
         _ => throw new ArgumentOutOfRangeException(nameof(hazardType), hazardType, null)
     };

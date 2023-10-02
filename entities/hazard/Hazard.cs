@@ -4,6 +4,9 @@ using static HazardLibrary;
 
 public sealed class Hazard : Character
 {
+    [Export]
+    private Texture[] MonsterTextures;
+
     protected override Vector2 Forward => Vector2.Up;
 
     private HazardType type = HazardType.Spider;
@@ -17,6 +20,7 @@ public sealed class Hazard : Character
             type = value;
             MaxHealth = type.MaxHealth();
             CurrentHealth = MaxHealth;
+            GetNode<Sprite>("Offset/Sprite").Texture = MonsterTextures[type.IndexOfTexture()];
         }
     }
 
