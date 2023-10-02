@@ -13,17 +13,80 @@ public static class DungeonRoomParser
         var rooms = new[]
         {
             Room(
-                PlayerDialogue(
+                Dialogue(
+                    Portrait.Player,
                     "Phew, that was a close call! I'm glad I managed to escape these nondescript monsters in time to arrive at the first monologue unscathed.",
-                    "I used up all my inventory except for my trusty Tutorial Sword. Wait, why's there a lampshade hung over there?")),
+                    "I used up all my inventory except for my trusty Tutorial Sword. Wait, why's there a lampshade hung over there?"
+                ),
+                Dialogue(
+                    Portrait.Narrator,
+                    "And thus began the journey of this unexpected hero!"
+                )
+            ),
             Room(
                 Item(Potion),
-                PlayerDialogue("A potion! This looks helpful.")),
-            Room(Item(Bomb)),
-            Room(Hazard(OvergrownVines), Item(Rope)),
-            Room(Item(Sword)),
-            Room(Hazard(Slime), Item(Sword)),
-            Room(Hazard(Spider), Item(PonderingOrb))
+                Dialogue(
+                    Portrait.Player,"A potion? Here? Guess my straight edge phase ends today."
+                )
+            ),
+            Room(
+                Item(Bomb),
+                Dialogue(
+                    Portrait.Player,
+                    "It's a common misconception that gunpowder is a recent invention."
+                ),
+                Dialogue(
+                    Portrait.Narrator,
+                    "The hero is correct, the earliest possible reference to gunpowder appeared in 142 AD during the Eastern Han dynasty."
+                ),
+                Dialogue(
+                    Portrait.Player,
+                    "Yeah the devs totally knew that piece of trivia."
+                )
+            ),
+            Room(
+                Dialogue(
+                    Portrait.Player, 
+                    "I feel like I'm about to fight an enemy.",
+                    "I think now is a good time to explain some battle mechanics out loud."
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "I'm sure the player is not mashing the skip button during this interaction."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "Right? I'm sure he's reading that he should click on the items he wants me to use.",
+                    "Whatever the word 'click' means in this context."
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "Unlike gunpowder, personal computers did not exist in the era this game takes place in."
+                ),
+                Hazard(OvergrownVines),
+                Item(Rope)),
+            Room(
+                Item(Sword)),
+            Room(
+                Dialogue(
+                    Portrait.Slime, 
+                    "The first slime you killed couldn't deal damage because he was a tutorial. He was also my father."
+                ),
+                Dialogue(
+                    Portrait.Narrator, 
+                    "This is a story about not getting to know your heroes."
+                ),
+                Dialogue(
+                    Portrait.Player, 
+                    "Shut up, narrator, the devs didn't even draw you a portrait."
+                ),
+                Hazard(Slime), 
+                Item(Sword)
+            ),
+            Room(
+                Hazard(Beholder),
+                Item(PonderingOrb)
+            )
         };
 
         var dict = new Dictionary<Coord, RoomContents>();

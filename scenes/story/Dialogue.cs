@@ -6,13 +6,18 @@ public sealed class Dialogue : Node2D
 {
     [Signal] public delegate void DialogueFinished();
 
+    [Export]
+    private Texture[] Portraits;
+
     private Label? text;
+    private TextureRect? portrait;
     private readonly Queue<Sentence> queuedDialogue = new();
     private bool hintPrimed;
 
     public override void _Ready()
     {
         text = GetNode<Label>("container/text");
+        portrait = GetNode<TextureRect>("container/portrait");
         if (queuedDialogue.Count > 0)
         {
             startSentence(queuedDialogue.Dequeue());
@@ -98,7 +103,7 @@ public sealed class Dialogue : Node2D
 
     private void startSentence(Sentence sentence)
     {
-        // TODO(will): Change portrait if we ever get this far
+        portrait!.Texture = Portraits[(int)sentence.Speaker];
         text!.PercentVisible = 0;
         text.Text = sentence.Text;
         resetHint();
@@ -112,5 +117,8 @@ public sealed record Sentence(
 
 public enum Portrait
 {
-    Player
+    Player,
+    Narrator,
+    Beholder,
+    Slime
 }
