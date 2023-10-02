@@ -5,7 +5,7 @@ using static HazardLibrary;
 public sealed class Hazard : Character
 {
     [Export]
-    private Texture[] MonsterTextures;
+    private Texture[] MonsterTextures = Array.Empty<Texture>();
 
     protected override Vector2 Forward => Vector2.Up;
 
@@ -20,13 +20,21 @@ public sealed class Hazard : Character
             type = value;
             MaxHealth = type.MaxHealth();
             CurrentHealth = MaxHealth;
-            GetNode<Sprite>("Offset/Sprite").Texture = MonsterTextures[type.IndexOfTexture()];
+            if (MonsterTextures.Length > 0)
+            {
+                GetNode<Sprite>("Offset/Sprite").Texture = MonsterTextures[type.IndexOfTexture()];
+            }
         }
     }
 
     public void DoTurn(Encounter encounter, Action completed)
     {
         DoAction(() => encounter.DamagePlayer(Type.AttackDamage()), completed);
+    }
+
+    public override void _Ready()
+    {
+        GetNode<Sprite>("Offset/Sprite").Texture = MonsterTextures[type.IndexOfTexture()];
     }
 
     public override void _Process(float delta)
