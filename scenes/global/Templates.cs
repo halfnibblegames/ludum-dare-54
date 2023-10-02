@@ -7,4 +7,5 @@ public sealed class Templates : Node
     [Export] public PackedScene ItemSelectScene { get; set; } = null!;
     [Export] public PackedScene ItemScene { get; set; } = null!;
     [Export] public PackedScene HazardScene { get; set; } = null!;
+    [Export] public PackedScene DialogueScene { get; set; } = null!;
 }

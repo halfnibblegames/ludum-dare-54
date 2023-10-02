@@ -6,12 +6,16 @@ public sealed class Dialogue : Node2D
 {
     [Signal] public delegate void DialogueFinished();
 
-    private Label text = null!;
+    private Label? text;
     private readonly Queue<Sentence> queuedDialogue = new();
 
     public override void _Ready()
     {
         text = GetNode<Label>("container/text");
+        if (queuedDialogue.Count > 0)
+        {
+            startSentence(queuedDialogue.Dequeue());
+        }
     }
 
     public override void _Process(float delta)
@@ -20,12 +24,12 @@ public sealed class Dialogue : Node2D
         {
             return;
         }
-        text.PercentVisible = Math.Min(text.PercentVisible + 0.5f * delta, 1.0f);
+        text!.PercentVisible = Math.Min(text.PercentVisible + 0.5f * delta, 1.0f);
     }
 
     public override void _Input(InputEvent @event)
     {
-        if (!Visible)
+        if (!Visible || text is null)
         {
             return;
         }
@@ -65,14 +69,18 @@ public sealed class Dialogue : Node2D
             return;
         }
 
-        startSentence(queuedDialogue.Dequeue());
+        if (text is not null)
+        {
+            startSentence(queuedDialogue.Dequeue());
+        }
+
         Visible = true;
     }
 
     private void startSentence(Sentence sentence)
     {
         // TODO(will): Change portrait if we ever get this far
-        text.PercentVisible = 0;
+        text!.PercentVisible = 0;
         text.Text = sentence.Text;
     }
 }

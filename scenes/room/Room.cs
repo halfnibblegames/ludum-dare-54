@@ -19,6 +19,8 @@ public sealed class Room : Node2D
     // find a better way of injecting this?
     public Player Player { get; set; } = null!;
 
+    public bool WantsInventory { get; private set; } = true;
+
     public override void _Ready()
     {
         templates = GetNode<Templates>("/root/Templates");
@@ -83,6 +85,7 @@ public sealed class Room : Node2D
 
         var step = queuedSteps.Dequeue();
         step.Do(this, Player, templates, doNextStep);
+        WantsInventory = step.WantsInventory;
     }
 
     private void exitRoom()

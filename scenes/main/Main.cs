@@ -1,5 +1,4 @@
 using Godot;
-using System.Linq;
 
 public sealed class Main : Node
 {
@@ -21,24 +20,22 @@ public sealed class Main : Node
         animations = GetNode<AnimationPlayer>("AnimationPlayer");
         shakeCamera = GetNode<ShakeCamera>("ShakeCamera");
 
-        ToggleInventory(forceState: false, skipAnimation: true);
-
         var inventory = GetNode<Inventory>("Inventory");
         inventory.Populate(dungeon.StartingItems);
 
-        var dialogue = GetNode<Dialogue>("Dialogue");
-        dialogue
-            .DisplayDialog(dungeon.Monologue.Select(x => new Sentence(Portrait.Player, x)).ToList());
-
         var room = GetNode<Room>("Room");
         room.Player = GetNode<Player>("Player");
+
+        room.FillRoom(dungeonTraverser.CurrentRoom);
     }
 
-    private void onDialogueFinished()
+    public override void _Process(float delta)
     {
-        var room = GetNode<Room>("Room");
-        room.FillRoom(dungeonTraverser.CurrentRoom);
-        ToggleInventory(forceState: true);
+        var wantsInventory = GetNode<Room>("Room").WantsInventory;
+        if (wantsInventory != currentInventoryVisibility)
+        {
+            ToggleInventory();
+        }
     }
 
     private void onRoomExited()

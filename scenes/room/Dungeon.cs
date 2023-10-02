@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using static HazardLibrary.HazardType;
 using static ItemLibrary.ItemType;
+using static RoomSteps;
 
 public static class DungeonRoomParser
 {
@@ -11,12 +12,18 @@ public static class DungeonRoomParser
     {
         var rooms = new[]
         {
-            RoomLibrary.SingleItem(Potion),
-            RoomLibrary.SingleItem(Bomb),
-            RoomLibrary.HazardWithLoot(OvergrownVines, Rope),
-            RoomLibrary.SingleItem(Sword),
-            RoomLibrary.HazardWithLoot(Slime, Sword),
-            RoomLibrary.HazardWithLoot(Spider, PonderingOrb)
+            Room(
+                PlayerDialogue(
+                    "Phew, that was a close call! I'm glad I managed to escape these nondescript monsters in time to arrive at the first monologue unscathed.",
+                    "I used up all my inventory except for my trusty Tutorial Sword. Wait, why's there a lampshade hung over there?")),
+            Room(
+                Item(Potion),
+                PlayerDialogue("A potion! This looks helpful.")),
+            Room(Item(Bomb)),
+            Room(Hazard(OvergrownVines), Item(Rope)),
+            Room(Item(Sword)),
+            Room(Hazard(Slime), Item(Sword)),
+            Room(Hazard(Spider), Item(PonderingOrb))
         };
 
         var dict = new Dictionary<Coord, RoomContents>();
@@ -67,11 +74,12 @@ public static class DungeonRoomParser
         if (c is ' ')
             return null;
 
+        ItemLibrary.ItemType loot = ItemLibrary.RandomItem();
         return c switch
         {
-            'X' => RoomLibrary.HazardWithLoot(Spider, ItemLibrary.RandomItem()),
-            '$' => RoomLibrary.SingleItem(ItemLibrary.RandomItem()),
-            _ => RoomLibrary.Empty()
+            'X' => Room(Hazard(Spider), Item(loot)),
+            '$' => Room(Item(ItemLibrary.RandomItem())),
+            _ => Room()
         };
     }
 }
@@ -100,8 +108,7 @@ public sealed record Dungeon(
     string Name,
     IReadOnlyList<ItemLibrary.ItemType> StartingItems,
     IReadOnlyDictionary<Coord, RoomContents> Rooms,
-    Coord Entrance,
-    IReadOnlyList<string> Monologue
+    Coord Entrance
 )
 {
     public DungeonRoom? this[Coord coords] =>
@@ -126,12 +133,7 @@ P
             Name: "A Tale of Encumbrance",
             StartingItems: new [] { Sword },
             Rooms: DungeonRoomParser.Linear(out var entrance), // DungeonRoomParser.FromMap(firstDungeonMap, out var entrance),
-            Entrance: entrance,
-            Monologue: new List<string>
-            {
-                "Phew, that was a close call! I'm glad I managed to escape these nondescript monsters in time to arrive at the first monologue unscathed.",
-                "I used up all my inventory except for my trusty Tutorial Sword. Wait, why's there a lampshade hung over there?"
-            }
+            Entrance: entrance
         );
     }
 }

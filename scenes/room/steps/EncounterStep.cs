@@ -5,6 +5,8 @@ public sealed class EncounterStep : IRoomStep
 {
     private readonly HazardLibrary.HazardType hazard;
 
+    public bool WantsInventory => true;
+
     public EncounterStep(HazardLibrary.HazardType hazard)
     {
         this.hazard = hazard;

@@ -1,26 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using Godot;
 
-public sealed class ItemDropStep : IRoomStep
+sealed class DialogueStep : IRoomStep
 {
-    private readonly ItemLibrary.ItemType item;
+    private readonly IReadOnlyList<Sentence> dialogue;
 
-    public bool WantsInventory => true;
+    public bool WantsInventory => false;
 
-    public ItemDropStep(ItemLibrary.ItemType item)
+    public DialogueStep(IReadOnlyList<Sentence> dialogue)
     {
-        this.item = item;
+        this.dialogue = dialogue;
     }
 
     public void Do(Node roomNode, Player player, Templates templates, Action complete)
     {
-        var drop = templates.ItemDropScene.Instance<ItemDrop>();
-        drop.SetItem(item);
-        var hover = drop.GetNode<HoveringItem>("HoveringItem");
+        var dialogue = templates.DialogueScene.Instance<Dialogue>();
+        dialogue.DisplayDialog(this.dialogue);
         var listener = new SignalListener(complete);
-        hover.Connect(nameof(HoveringItem.ItemPlaced), listener, nameof(listener.OnItemPlaced));
+        dialogue.Connect(nameof(Dialogue.DialogueFinished), listener, nameof(listener.OnDialogueFinished));
         roomNode.AddChild(listener);
-        listener.AddChild(drop);
+        listener.AddChild(dialogue);
 
         roomNode.Connect(nameof(Room.RoomExited), listener, nameof(listener.Quit));
     }
@@ -34,8 +34,7 @@ public sealed class ItemDropStep : IRoomStep
             this.complete = complete;
         }
 
-        // ReSharper disable once UnusedParameter.Local
-        public void OnItemPlaced(HoveringItem item)
+        public void OnDialogueFinished()
         {
             QueueFree();
             complete();
