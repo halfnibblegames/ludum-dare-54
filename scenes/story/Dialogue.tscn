@@ -1,13 +1,17 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/images/dialogue_backdrop.png" type="Texture" id=1]
 [ext_resource path="res://assets/images/portraits.png" type="Texture" id=2]
 [ext_resource path="res://assets/Minimal4.tres" type="DynamicFont" id=3]
 [ext_resource path="res://scenes/story/Dialogue.cs" type="Script" id=4]
-[ext_resource path="res://entities/mouse/Mouse.tscn" type="PackedScene" id=5]
+[ext_resource path="res://assets/images/slime_portrait.png" type="Texture" id=5]
+[ext_resource path="res://assets/images/narrator.png" type="Texture" id=6]
+[ext_resource path="res://assets/images/beholder_portrait.png" type="Texture" id=7]
+[ext_resource path="res://entities/mouse/Mouse.tscn" type="PackedScene" id=8]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 4 )
+Portraits = [ ExtResource( 2 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 5 ) ]
 
 [node name="container" type="Control" parent="."]
 margin_left = 9.0
@@ -38,6 +42,6 @@ align = 3
 valign = 1
 autowrap = true
 
-[node name="MouseHint" parent="." instance=ExtResource( 5 )]
+[node name="MouseHint" parent="." instance=ExtResource( 8 )]
 visible = false
 position = Vector2( 181, 95 )

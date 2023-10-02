@@ -9,9 +9,9 @@ public static class RoomSteps
 
     public static IRoomStep Item(ItemLibrary.ItemType item) => new ItemDropStep(item);
     public static IRoomStep Hazard(HazardLibrary.HazardType hazard) => new EncounterStep(hazard);
-    public static IRoomStep PlayerDialogue(params string[] dialogue) =>
-        Dialogue(dialogue.Select(s => new Sentence(Portrait.Player, s)).ToList());
-    public static IRoomStep Dialogue(IReadOnlyList<Sentence> dialogue) => new DialogueStep(dialogue);
+    public static IRoomStep Dialogue(Portrait portrait, params string[] dialogue) =>
+        Dialogue(dialogue.Select(s => new Sentence(portrait, s)).ToList());
+    private static IRoomStep Dialogue(IReadOnlyList<Sentence> dialogue) => new DialogueStep(dialogue);
 }
 
 public interface IRoomStep
