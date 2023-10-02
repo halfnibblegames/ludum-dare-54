@@ -17,7 +17,8 @@ public sealed class ItemDropStep : IRoomStep
         var drop = templates.ItemDropScene.Instance<ItemDrop>();
         drop.SetItem(item);
         var hover = drop.GetNode<HoveringItem>("HoveringItem");
-        var listener = new SignalListener(complete);
+        var listener = new SignalListener(drop, complete);
+        hover.Connect(nameof(HoveringItem.ItemPicked), listener, nameof(listener.OnItemPicked));
         hover.Connect(nameof(HoveringItem.ItemPlaced), listener, nameof(listener.OnItemPlaced));
         roomNode.AddChild(listener);
         listener.AddChild(drop);
@@ -27,11 +28,23 @@ public sealed class ItemDropStep : IRoomStep
 
     private sealed class SignalListener : Node
     {
+        private readonly ItemDrop drop;
         private readonly Action complete;
 
-        public SignalListener(Action complete)
+        public SignalListener(ItemDrop drop, Action complete)
         {
+            this.drop = drop;
             this.complete = complete;
+        }
+
+        public override void _Ready()
+        {
+            drop.PrimeChestHint();
+        }
+
+        public void OnItemPicked()
+        {
+            drop.PrimeDropHint();
         }
 
         // ReSharper disable once UnusedParameter.Local

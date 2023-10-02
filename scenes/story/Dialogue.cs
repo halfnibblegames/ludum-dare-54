@@ -8,6 +8,7 @@ public sealed class Dialogue : Node2D
 
     private Label? text;
     private readonly Queue<Sentence> queuedDialogue = new();
+    private bool hintPrimed;
 
     public override void _Ready()
     {
@@ -25,6 +26,22 @@ public sealed class Dialogue : Node2D
             return;
         }
         text!.PercentVisible = Math.Min(text.PercentVisible + 0.5f * delta, 1.0f);
+        if (text.PercentVisible >= 1 && !hintPrimed)
+        {
+            primeHint();
+        }
+    }
+
+    private void primeHint()
+    {
+        GetNode<InputMouseHint>("MouseHint").Prime();
+        hintPrimed = true;
+    }
+
+    private void resetHint()
+    {
+        GetNode<InputMouseHint>("MouseHint").Reset();
+        hintPrimed = false;
     }
 
     public override void _Input(InputEvent @event)
@@ -42,6 +59,7 @@ public sealed class Dialogue : Node2D
         if (text.PercentVisible < 1)
         {
             text.PercentVisible = 1;
+            primeHint();
             return;
         }
 
@@ -53,6 +71,7 @@ public sealed class Dialogue : Node2D
 
         EmitSignal(nameof(DialogueFinished));
         Visible = false;
+        resetHint();
     }
 
     public void DisplayDialog(IReadOnlyList<Sentence> dialog)
@@ -82,6 +101,7 @@ public sealed class Dialogue : Node2D
         // TODO(will): Change portrait if we ever get this far
         text!.PercentVisible = 0;
         text.Text = sentence.Text;
+        resetHint();
     }
 }
 

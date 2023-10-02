@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://assets/images/dialogue_backdrop.png" type="Texture" id=1]
 [ext_resource path="res://assets/images/portraits.png" type="Texture" id=2]
 [ext_resource path="res://assets/Minimal4.tres" type="DynamicFont" id=3]
 [ext_resource path="res://scenes/story/Dialogue.cs" type="Script" id=4]
+[ext_resource path="res://entities/mouse/Mouse.tscn" type="PackedScene" id=5]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 4 )
@@ -36,3 +37,7 @@ text = "Phew, that was a close call! I'm glad I managed to escape these nondescr
 align = 3
 valign = 1
 autowrap = true
+
+[node name="MouseHint" parent="." instance=ExtResource( 5 )]
+visible = false
+position = Vector2( 181, 95 )

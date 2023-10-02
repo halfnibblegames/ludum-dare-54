@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public class ItemDrop : Node2D
 {
@@ -12,5 +11,16 @@ public class ItemDrop : Node2D
     {
         GetNode<HoveringItem>("HoveringItem").SetItem(item);
         GetNode<BottomHud>("BottomHud").SetItem(item);
+    }
+
+    public void PrimeChestHint()
+    {
+        GetNode<InputMouseHint>("ChestMouseHint").Prime();
+    }
+
+    public void PrimeDropHint()
+    {
+        GetNode<InputMouseHint>("ChestMouseHint").Reset();
+        GetNode<InputMouseHint>("InventoryMouseHint").Prime();
     }
 }

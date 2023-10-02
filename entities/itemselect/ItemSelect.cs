@@ -20,6 +20,8 @@ public sealed class ItemSelect : Node
         hud = GetNode<BottomHud>("BottomHud");
         mousePos = cursor.GetGlobalMousePosition();
         cursor.Position = mousePos;
+
+        GetNode<InputMouseHint>("InventoryMouseHint").Prime();
     }
 
     public override void _Process(float delta)

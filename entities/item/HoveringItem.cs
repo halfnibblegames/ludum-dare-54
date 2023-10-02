@@ -3,6 +3,9 @@ using Godot;
 public sealed class HoveringItem : Area2D
 {
     [Signal]
+    public delegate void ItemPicked();
+
+    [Signal]
     public delegate void ItemPlaced(HoveringItem item);
 
     private Item item = null!;
@@ -79,6 +82,7 @@ public sealed class HoveringItem : Area2D
     private void pickUp()
     {
         pickedUp = true;
+        EmitSignal(nameof(ItemPicked));
     }
 
     private void onItemPropertiesChanged()
