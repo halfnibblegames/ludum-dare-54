@@ -195,7 +195,8 @@ public static class DungeonRoomParser
                 Hazard(Slime)
             ),
             Room(
-                Hazard(Slime)
+                Hazard(Slime),
+                Item(Crown)
             ),
             Room(
                 Hazard(Slime)
